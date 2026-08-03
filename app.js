@@ -90,6 +90,19 @@
     return !!obj[okField[cat]];
   }
 
+  // Runway of each airport, derived from leg destinations (the tour is one continuous route).
+  const airportRunway = {};
+  data.legs.forEach(function (l) { airportRunway[l.to] = l.runway; });
+  function legFromRunway(l) {
+    return (airportRunway[l.from] != null) ? airportRunway[l.from] : l.runway;
+  }
+  function catOkLeg(l, cat) {
+    if (cat === 'all') return true;
+    const t = data.thresholds[cat];
+    if (!t || t.min == null) return true;
+    return Math.min(legFromRunway(l), l.runway) >= t.min;
+  }
+
   function shortOf(cat) { return SHORT[cat] || cat; }
 
   function thresholdText(cat) {
@@ -125,8 +138,7 @@
     return s;
   }
 
-  function okChipHtml(cat, obj, isRek) {
-    const ok = catOk(obj, cat);
+  function okChipHtml(cat, ok, isRek) {
     const cls = isRek ? 'rek' : (ok ? 'ok' : 'no');
     return '<span class="ok-chip ' + cls + '" title="' + cat + (isRek ? ' \u2014 recommended' : '') + '">' + shortOf(cat) + (isRek ? ' \u2605' : (ok ? ' \u2713' : ' \u2717')) + '</span>';
   }
@@ -176,7 +188,7 @@
       '<div class="popup-row"><b>Recommended:</b> ' + c.category + '</div>' +
       '<div class="popup-row"><span class="stars">' + starsHtml(c.rating) + '</span> <span class="rank">' + c.ranking + '</span></div>' +
       '<div class="popup-row"><b>Can land:</b> ' +
-        CATS.map(function (cat) { return okChipHtml(cat, c, c.category === cat); }).join(' ') +
+        CATS.map(function (cat) { return okChipHtml(cat, catOk(c, cat), c.category === cat); }).join(' ') +
       '</div>';
 
     if (played.has(c.id)) {
@@ -198,14 +210,18 @@
   }
 
   function legPopup(l) {
+    const fromRw = legFromRunway(l);
     return '<div class="popup-title">Leg #' + l.id + ': ' + l.from + ' \u2192 ' + l.to + '</div>' +
       '<div class="popup-sub">' + l.fromName + ' \u2192 ' + l.toName + '</div>' +
       '<div class="popup-row"><b>Distance:</b> ' + fmtNum(l.distance) + ' nm</div>' +
       '<div class="popup-row"><b>Flight time:</b> ' + l.flightTime + ' (' + fmtNum(l.speed) + ' kt)</div>' +
-      '<div class="popup-row"><b>Runway:</b> ' + fmtNum(l.runway) + ' ft</div>' +
+      '<div class="popup-row"><b>Runways:</b> ' + fmtNum(fromRw) + ' ft \u2192 ' + fmtNum(l.runway) + ' ft</div>' +
+      (Math.min(fromRw, l.runway) < l.runway
+        ? '<div class="popup-row popup-warn" style="border-radius:8px;padding:6px 8px">\u26A0 Takeoff strip (' + fmtNum(fromRw) + ' ft) is the limiting runway</div>'
+        : '') +
       '<div class="popup-row"><b>Recommended:</b> ' + l.category + '</div>' +
-      '<div class="popup-row"><b>Can land:</b> ' +
-        CATS.map(function (cat) { return okChipHtml(cat, l, l.category === cat); }).join(' ') +
+      '<div class="popup-row"><b>Can fly:</b> ' +
+        CATS.map(function (cat) { return okChipHtml(cat, catOkLeg(l, cat), l.category === cat); }).join(' ') +
       '</div>';
   }
 
@@ -247,7 +263,7 @@
       return { color: CATEGORY_COLORS[l.category], weight: 2, opacity: 0.6 };
     }
     if (l.category === selectedAircraft) return { color: '#f5b942', weight: 3.5, opacity: 0.95 };
-    if (catOk(l, selectedAircraft)) return { color: '#34d399', weight: 2, opacity: 0.7 };
+    if (catOkLeg(l, selectedAircraft)) return { color: '#34d399', weight: 2, opacity: 0.7 };
     return { color: '#f97066', weight: 2, opacity: 0.35, dashArray: '6 6' };
   }
 
@@ -276,7 +292,7 @@
 
   function legCount(cat) {
     if (cat === 'all') return data.legs.length;
-    return data.legs.filter(function (l) { return catOk(l, cat); }).length;
+    return data.legs.filter(function (l) { return catOkLeg(l, cat); }).length;
   }
   function courseCount(cat) {
     if (cat === 'all') return data.courses.length;
@@ -301,8 +317,8 @@
   function updateCaption() {
     if (selectedAircraft === 'all') {
       hintEl.textContent = '';
-      captionEl.innerHTML = 'Pick an aircraft to see which courses and routes you can land on. ' +
-        '<b class="accent">Gold = recommended aircraft</b>, green = can land, red = cannot land.';
+      captionEl.innerHTML = 'Pick an aircraft to see which courses and routes you can fly. ' +
+        '<b class="accent">Gold = recommended aircraft</b>, green = can fly (takeoff + landing), red = cannot.';
     } else {
       const fleet = data.fleet[selectedAircraft];
       const okC = courseCount(selectedAircraft);
@@ -450,7 +466,7 @@
       entry.row.style.display = show ? '' : 'none';
       entry.row.classList.toggle('played', played.has(c.id));
 
-      entry.chipsEl.innerHTML = CATS.map(function (cat) { return okChipHtml(cat, c, c.category === cat); }).join(' ');
+      entry.chipsEl.innerHTML = CATS.map(function (cat) { return okChipHtml(cat, catOk(c, cat), c.category === cat); }).join(' ');
 
       let statusCls = '';
       let statusText = '';
@@ -603,11 +619,15 @@
     });
   }
 
-  function isLegFlown(l) { return played.has(l.id + 1); }
+  function isLegFlown(l) {
+    const c = findCourseByCode(l.to);
+    return !!(c && played.has(c.id));
+  }
 
   function nextLegId() {
     for (let i = 0; i < data.legs.length; i++) {
-      if (!played.has(data.legs[i].id + 1)) return data.legs[i].id;
+      const c = findCourseByCode(data.legs[i].to);
+      if (!c || !played.has(c.id)) return data.legs[i].id;
     }
     return null;
   }
@@ -617,12 +637,12 @@
     const nextId = nextLegId();
     legRows.forEach(function (entry, i) {
       const l = data.legs[i];
-      entry.chipsEl.innerHTML = CATS.map(function (cat) { return okChipHtml(cat, l, l.category === cat); }).join('');
+      entry.chipsEl.innerHTML = CATS.map(function (cat) { return okChipHtml(cat, catOkLeg(l, cat), l.category === cat); }).join('');
 
       let cls = '';
       if (selectedAircraft !== 'all') {
         if (l.category === selectedAircraft) cls = 'status-rek';
-        else if (catOk(l, selectedAircraft)) cls = 'status-ok';
+        else if (catOkLeg(l, selectedAircraft)) cls = 'status-ok';
         else cls = 'status-no';
       }
       const flown = isLegFlown(l);
@@ -779,8 +799,19 @@
   function findLegFor(from, to) {
     return data.legs.find(function (l) { return l.from === from && l.to === to; }) || null;
   }
-  function findCourseByArrival(icao) {
-    return data.courses.find(function (c) { return c.arrival === icao; }) || null;
+  function hubCode(c) { return (c.hub || '').split(' ')[0].toUpperCase(); }
+  function closerCode(c) { return (c.closer || '').split(' ')[0].toUpperCase(); }
+  function findCourseByCode(icao) {
+    if (!icao) return null;
+    const ic = String(icao).toUpperCase().trim();
+    let byHub = null, byCloser = null;
+    for (let i = 0; i < data.courses.length; i++) {
+      const c = data.courses[i];
+      if (c.arrival === ic) return c;
+      if (!byHub && hubCode(c) === ic) byHub = c;
+      if (!byCloser && closerCode(c) === ic) byCloser = c;
+    }
+    return byHub || byCloser;
   }
 
   function matchFleetAircraft(name) {
@@ -804,6 +835,16 @@
     flownAircraft[course.id] = { ac: label, t: (prev && prev.t) ? prev.t : Date.now(), icao: fleet ? '' : (aircraftIcao || '') };
     savePlayed();
     refreshCourseVisuals(course.id);
+  }
+
+  function reconcileFlightsWithCourses() {
+    flights.forEach(function (f) {
+      if (!f.to) return;
+      const course = findCourseByCode(f.to);
+      if (course && !played.has(course.id)) {
+        markCoursePlayedFromFlight(course, f.aircraft || '', f.icao || '');
+      }
+    });
   }
 
   function parseHMM(s) {
@@ -872,7 +913,7 @@
 
   function buildFlightPreview(parsed, source) {
     const leg = findLegFor(parsed.from, parsed.to);
-    const course = findCourseByArrival(parsed.to);
+    const course = findCourseByCode(parsed.to);
     let html =
       '<div class="fm-preview-row"><b>' + parsed.from + ' \u2192 ' + parsed.to + '</b></div>' +
       (parsed.aircraft ? '<div class="fm-preview-row">Aircraft: ' + parsed.aircraft + '</div>' : '') +
@@ -900,6 +941,7 @@
       from: p.parsed.from,
       to: p.parsed.to,
       aircraft: p.parsed.aircraft,
+      icao: p.parsed.aircraftIcao || '',
       t: Date.now(),
       distanceNm: p.parsed.dist,
       timeMin: p.parsed.timeMin,
@@ -1064,6 +1106,7 @@
   buildLegList();
   buildSidebarLegend();
   updateCaption();
+  reconcileFlightsWithCourses();
   refreshCourseRows();
   refreshLegRows();
   refreshLegSummary();
