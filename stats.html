@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stats · MSFS24 World Golf Tour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">🏌️</div>
+    <div>
+      <h1>MSFS24 <span class="accent">World Golf Tour</span></h1>
+      <p class="tagline">Your tour statistics &middot; flown distance, time and aircraft breakdown</p>
+    </div>
+  </div>
+  <nav class="topnav">
+    <a class="nav-link" href="index.html">Map</a>
+    <a class="nav-link active" href="stats.html">Stats</a>
+  </nav>
+</header>
+
+<main class="stats-main">
+  <div id="empty-banner" class="empty-note" style="display:none"></div>
+
+  <div class="stat-hero" id="stat-hero"></div>
+
+  <div class="info-card">
+    <h3>Tour progress</h3>
+    <div class="progress-track"><div class="progress-fill" id="p-fill" style="width:0%"></div></div>
+    <div style="margin-top:8px;font-size:12px;color:var(--muted)"><b style="color:var(--accent)" id="p-pct">0%</b> of the tour completed <span id="p-note"></span></div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card"><h3>Courses by aircraft</h3><div class="chart-box"><canvas id="ch-aircraft"></canvas></div></div>
+    <div class="chart-card"><h3>Courses per region</h3><div class="chart-box"><canvas id="ch-region"></canvas></div></div>
+    <div class="chart-card"><h3>Distance flown by aircraft</h3><div class="chart-box"><canvas id="ch-distance"></canvas></div></div>
+    <div class="chart-card"><h3>Courses flown over time</h3><div class="chart-box"><canvas id="ch-time"></canvas></div></div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="info-card">
+      <h3>Flown by aircraft</h3>
+      <div id="aircraft-table"></div>
+    </div>
+    <div class="info-card">
+      <h3>Legs per recommended category</h3>
+      <div class="cat-bars" id="cat-bars"></div>
+      <div class="note" style="margin-top:10px">Recommended aircraft type per leg. You can land with anything meeting the runway requirement for its category.</div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <h3>Your fleet &amp; runway requirements</h3>
+    <div id="fleet-card"></div>
+    <div class="note" style="margin-top:10px"><b>Rule:</b> an aircraft can only land if the runway meets the requirement for its category.
+      GA has no practical minimum (the shortest runway on the route is 2,881 ft).</div>
+  </div>
+</main>
+
+<script src="data.js"></script>
+<script src="stats.js"></script>
+</body>
+</html>

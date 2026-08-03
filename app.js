@@ -30,16 +30,43 @@
   const CATS = data.categories;
   const okField = data.okField;
 
+  // Build the aircraft list from the fleet definitions
+  const AIRCRAFT = []; // { label, cat }
+  CATS.forEach(function (cat) {
+    const f = data.fleet[cat];
+    if (!f || !f.planes) return;
+    f.planes.split(',').forEach(function (p) {
+      const label = p.trim().replace(/^\+/, '').trim();
+      if (!label) return;
+      AIRCRAFT.push({ label: label, cat: cat });
+    });
+  });
+
   // ---------- State ----------
   let played = new Set();
+  let flownAircraft = {}; // courseId -> { ac: label, t: timestamp|null }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) { const arr = JSON.parse(raw); if (Array.isArray(arr)) played = new Set(arr.map(Number)); }
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        // Legacy format: plain array of course ids
+        played = new Set(parsed.map(Number));
+      } else {
+        Object.keys(parsed).forEach(function (k) {
+          const v = parsed[k];
+          flownAircraft[k] = (typeof v === 'string') ? { ac: v, t: null } : v;
+        });
+        played = new Set(Object.keys(flownAircraft).map(Number));
+      }
+    }
   } catch (e) { /* ignore */ }
 
   let selectedAircraft = 'all';
 
-  function savePlayed() { localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(played))); }
+  function savePlayed() { localStorage.setItem(STORAGE_KEY, JSON.stringify(flownAircraft)); }
+
+  function acName(rec) { return (rec && rec.ac) ? rec.ac : (rec || ''); }
 
   // ---------- Helpers ----------
   function catOk(obj, cat) {
@@ -125,6 +152,11 @@
       '<div class="popup-row"><b>Can land:</b> ' +
         CATS.map(function (cat) { return okChipHtml(cat, c, c.category === cat); }).join(' ') +
       '</div>';
+
+    if (played.has(c.id)) {
+      const rec = flownAircraft[c.id];
+      html += '<div class="popup-row popup-flown">Flown' + (rec ? ' with <b>' + acName(rec) + '</b>' : '') + '</div>';
+    }
 
     if (selectedAircraft !== 'all') {
       if (c.category === selectedAircraft) html += '<div class="popup-rek">\u2B50 Recommended aircraft for this course</div>';
@@ -335,11 +367,16 @@
       const statusEl = document.createElement('div');
       statusEl.className = 'status-line';
 
+      const flownEl = document.createElement('div');
+      flownEl.className = 'flown-line';
+      flownEl.title = 'Change aircraft';
+
       info.appendChild(name);
       info.appendChild(sub);
       info.appendChild(meta);
       info.appendChild(chipsEl);
       info.appendChild(statusEl);
+      info.appendChild(flownEl);
 
       const check = document.createElement('div');
       check.className = 'check';
@@ -358,9 +395,13 @@
         e.stopPropagation();
         togglePlayed(c.id);
       });
+      flownEl.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (played.has(c.id)) buildAircraftPicker(c, true);
+      });
 
       listEl.appendChild(row);
-      courseRows.set(c.id, { row: row, num: num, name: name, chipsEl: chipsEl, statusEl: statusEl });
+      courseRows.set(c.id, { row: row, num: num, name: name, chipsEl: chipsEl, statusEl: statusEl, flownEl: flownEl });
     });
   }
 
@@ -398,23 +439,96 @@
       entry.statusEl.className = 'status-line' + (statusCls ? ' ' + statusCls : '');
       entry.statusEl.textContent = statusText;
 
+      if (played.has(c.id)) {
+        const rec = flownAircraft[c.id];
+        entry.flownEl.innerHTML = rec
+          ? 'Flown with <b>' + acName(rec) + '</b> <span class="change-hint">\u00B7 change</span>'
+          : 'Flown';
+      } else {
+        entry.flownEl.innerHTML = '';
+      }
+
       const m = courseMarkers.get(c.id);
       if (show && m) { if (!map.hasLayer(m)) m.addTo(map); }
       else if (m) { m.remove(); }
     });
   }
 
-  function togglePlayed(id) {
-    if (played.has(id)) played.delete(id); else played.add(id);
-    savePlayed();
+  function refreshCourseVisuals(id) {
     const c = data.courses.find(function (x) { return x.id === id; });
     const m = courseMarkers.get(id);
-    if (m) {
+    if (c && m) {
       m.setIcon(markerIcon(c, played.has(id)));
       m.setPopupContent(coursePopup(c));
     }
     refreshCourseRows();
     updateStats();
+  }
+
+  // ---------- Aircraft picker modal ----------
+  const modalEl = document.getElementById('aircraft-modal');
+  const modalGroupsEl = document.getElementById('modal-groups');
+
+  function closeModal() {
+    modalEl.classList.add('hidden');
+  }
+
+  function buildAircraftPicker(c, changeMode) {
+    const current = changeMode ? flownAircraft[c.id] : null;
+    document.querySelector('#aircraft-modal .modal-title').innerHTML = changeMode
+      ? 'Change aircraft for <b>' + c.name + '</b>'
+      : 'Fly to <b>' + c.name + '</b>';
+    document.querySelector('#aircraft-modal .modal-sub').textContent = changeMode
+      ? (current ? 'Currently recorded: ' + acName(current) + '. Pick the aircraft you actually flew.' : 'Pick the aircraft you actually flew.')
+      : 'Which aircraft did you fly with?';
+    modalGroupsEl.innerHTML = '';
+
+    const ordered = [c.category].concat(CATS.filter(function (cat) { return cat !== c.category; }));
+    ordered.forEach(function (cat) {
+      const planes = AIRCRAFT.filter(function (a) { return a.cat === cat; });
+      if (!planes.length) return;
+      const group = document.createElement('div');
+      group.className = 'modal-group' + (cat === c.category ? ' rek' : '');
+      const head = document.createElement('div');
+      head.className = 'modal-group-head';
+      head.textContent = cat + (cat === c.category ? ' \u00B7 recommended' : '');
+      group.appendChild(head);
+      const grid = document.createElement('div');
+      grid.className = 'modal-grid';
+      planes.forEach(function (a) {
+        const btn = document.createElement('button');
+        btn.className = 'modal-ac';
+        if (current && acName(current) === a.label) btn.className += ' current';
+        btn.textContent = a.label;
+        btn.addEventListener('click', function () { confirmPlayed(c.id, a.label); });
+        grid.appendChild(btn);
+      });
+      group.appendChild(grid);
+      modalGroupsEl.appendChild(group);
+    });
+
+    modalEl.classList.remove('hidden');
+  }
+
+  function confirmPlayed(id, aircraft) {
+    const prev = flownAircraft[id];
+    played.add(id);
+    flownAircraft[id] = { ac: aircraft, t: (prev && prev.t) ? prev.t : Date.now() };
+    savePlayed();
+    closeModal();
+    refreshCourseVisuals(id);
+  }
+
+  function togglePlayed(id) {
+    if (played.has(id)) {
+      played.delete(id);
+      delete flownAircraft[id];
+      savePlayed();
+      refreshCourseVisuals(id);
+    } else {
+      const c = data.courses.find(function (x) { return x.id === id; });
+      if (c) buildAircraftPicker(c);
+    }
   }
 
   function flyToCourse(id) {
@@ -498,49 +612,7 @@
     setTimeout(function () { entry.polyline.openPopup(); }, 480);
   }
 
-  // ---------- Info tab ----------
-  function buildInfoTab() {
-    const el = document.getElementById('info-content');
-    const s = data.stats;
-    const total = data.courses.length;
-
-    let catBars = '';
-    CATS.forEach(function (cat) {
-      const count = data.legsByCategory[cat] || 0;
-      const pct = Math.round(count / data.legs.length * 100);
-      catBars += '<div class="cat-bar"><div class="row"><span>' + cat + '</span><span><b>' + count + '</b> legs \u00B7 ' + pct + '%</span></div>' +
-        '<div class="track"><div class="fill" style="width:' + pct + '%;background:' + CATEGORY_COLORS[cat] + '"></div></div></div>';
-    });
-
-    let fleetRows = '';
-    CATS.forEach(function (cat) {
-      const f = data.fleet[cat];
-      fleetRows += '<tr><td><b>' + cat + '</b></td><td>' + (f ? f.planes : '—') + '</td><td>' + (f ? fmtNum(f.speed) : '—') + ' kt</td><td>' + thresholdText(cat) + '</td></tr>';
-    });
-
-    el.innerHTML =
-      '<div class="info-wrap">' +
-        '<div class="info-card"><h3>Tour progress</h3>' +
-          '<div class="big-num" id="info-played">0 <span class="small">/ ' + total + ' courses</span></div>' +
-          '<div class="progress-track"><div class="progress-fill" id="info-fill" style="width:0%"></div></div>' +
-          '<div style="margin-top:8px;font-size:12px;color:var(--muted)"><b style="color:var(--accent)" id="info-pct">0%</b> of the tour completed</div>' +
-        '</div>' +
-        '<div class="info-grid">' +
-          '<div class="info-card"><h3>Total distance</h3><div class="big-num">' + fmtNum(s.distanceNm) + ' <span class="small">nm</span></div></div>' +
-          '<div class="info-card"><h3>Total distance</h3><div class="big-num">' + fmtNum(s.distanceKm) + ' <span class="small">km</span></div></div>' +
-          '<div class="info-card"><h3>Flight time</h3><div class="big-num">' + fmtTime(s.flightTimeH) + '</div></div>' +
-          '<div class="info-card"><h3>Flight legs</h3><div class="big-num">' + s.totalLegs + '</div></div>' +
-        '</div>' +
-        '<div class="info-card"><h3>Legs per recommended category</h3>' + catBars + '</div>' +
-        '<div class="info-card"><h3>Your fleet &amp; runway requirements</h3>' +
-          '<table class="detail"><tr><th>Category</th><th>Aircraft</th><th>Speed</th><th>Runway requirement</th></tr>' + fleetRows + '</table>' +
-          '<div class="note" style="margin-top:10px"><b>Rule:</b> an aircraft can only land if the runway meets the requirement for its category. ' +
-          'GA has no practical minimum (the shortest runway on the route is 2,881 ft). Check the "Can land" row on every course or leg before you fly!</div>' +
-        '</div>' +
-      '</div>';
-  }
-
-  // ---------- Stats ----------
+  // ---------- Stats (topbar) ----------
   function updateStats() {
     const total = data.courses.length;
     const done = data.courses.filter(function (c) { return played.has(c.id); }).length;
@@ -549,12 +621,6 @@
     document.getElementById('stat-completion').textContent = pct + '%';
     document.getElementById('stat-distance').textContent = fmtNum(data.stats.distanceNm) + ' nm';
     document.getElementById('stat-time').textContent = fmtTime(data.stats.flightTimeH);
-    const fill = document.getElementById('info-fill');
-    const pctEl = document.getElementById('info-pct');
-    const playedEl = document.getElementById('info-played');
-    if (fill) fill.style.width = pct + '%';
-    if (pctEl) pctEl.textContent = pct + '%';
-    if (playedEl) playedEl.innerHTML = done + ' <span class="small">/ ' + total + ' courses</span>';
   }
 
   // ---------- Legends ----------
@@ -610,6 +676,7 @@
   document.getElementById('reset-all').addEventListener('click', function () {
     if (!confirm('Mark all courses as unplayed? This resets your checklist.')) return;
     played.clear();
+    flownAircraft = {};
     savePlayed();
     data.courses.forEach(function (c) {
       const m = courseMarkers.get(c.id);
@@ -619,11 +686,16 @@
     updateStats();
   });
 
+  document.getElementById('modal-cancel').addEventListener('click', closeModal);
+  modalEl.addEventListener('click', function (e) { if (e.target === modalEl) closeModal(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !modalEl.classList.contains('hidden')) closeModal();
+  });
+
   // ---------- Init ----------
   buildAircraftPills();
   buildCourseList();
   buildLegList();
-  buildInfoTab();
   buildSidebarLegend();
   updateCaption();
   refreshCourseRows();

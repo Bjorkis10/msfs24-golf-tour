@@ -21,6 +21,10 @@
       <p class="tagline">66 courses &middot; 64 flight legs &middot; around the world in Microsoft Flight Simulator 2024</p>
     </div>
   </div>
+  <nav class="topnav">
+    <a class="nav-link active" href="index.html">Map</a>
+    <a class="nav-link" href="stats.html">Stats</a>
+  </nav>
   <div class="stats" id="stat-bar">
     <div class="stat-card"><div class="sv" id="stat-played">0/66</div><div class="sl">Courses played</div></div>
     <div class="stat-card"><div class="sv" id="stat-completion">0%</div><div class="sl">Complete</div></div>
@@ -41,7 +45,6 @@
     <nav class="tabs">
       <button class="tab active" data-tab="courses">Courses</button>
       <button class="tab" data-tab="legs">Routes</button>
-      <button class="tab" data-tab="info">Stats</button>
     </nav>
 
     <div class="tab-body">
@@ -66,10 +69,6 @@
         <div id="leg-head" class="leg-row leg-head"></div>
         <div id="leg-list" class="scroll-area"></div>
       </section>
-
-      <section id="tab-info" class="tab-pane scroll-area">
-        <div id="info-content"></div>
-      </section>
     </div>
 
     <div class="legend" id="sidebar-legend"></div>
@@ -78,6 +77,15 @@
   <div id="map"></div>
   <div class="map-legend" id="map-legend"></div>
 </main>
+
+<div id="aircraft-modal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-title"></div>
+    <div class="modal-sub"></div>
+    <div class="modal-groups" id="modal-groups"></div>
+    <div class="modal-actions"><button id="modal-cancel" class="btn-cancel">Cancel</button></div>
+  </div>
+</div>
 
 <script src="data.js"></script>
 <script src="app.js"></script>
