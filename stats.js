@@ -4,6 +4,7 @@
   const data = TOUR_DATA;
   const CATS = data.categories;
   const STORAGE_KEY = 'msfs24-world-golf-tour-played';
+  const FLIGHTS_KEY = 'msfs24-world-golf-tour-flights';
   const NM2KM = 1.852;
 
   const SHORT = {
@@ -33,6 +34,23 @@
     });
   });
 
+  // Best category for an ICAO type code not in our fleet (e.g. from SimBrief)
+  function classifyAircraftByType(icao) {
+    const t = String(icao || '').toUpperCase();
+    if (!t) return '';
+    if (/^(A300|A310|A330|A332|A333|A338|A339|A340|A342|A343|A345|A346|A350|A351|A359|A35K|A380|A388|B741|B742|B743|B744|B748|B77|B78|B762|B763|B764|MD11|IL86|IL96|L101|D10)/.test(t)) return 'Widebody (A340/A350/777/MD-11)';
+    if (/^(A318|A319|A320|A321|A322|A19|A20|A21|BCS|B712|B717|B72|B73|B37|B38|B39|MD8|MD9)/.test(t)) return 'Narrowbody (A320/737)';
+    if (/^(ATR|AT4|AT5|AT7|CRJ|CR1|CR2|CR7|CR9|E14|E17|E19|E75|E90|E145|ERJ|DH8|DH4|SF34|F50|F70|F100|BA4|RJ1|RJ7|RJ8|J328|ARJ)/.test(t)) return 'Regional (ATR/ERJ)';
+    if (/^(C1|C2|C25|C5|C6|C7|C8|C90|P28|PA2|PA3|PA4|PA6|PA7|SR2|SR1|TBM|PC1|PC2|DA4|DA6|BE1|BE2|BE3|BE4|BE5|BE6|BE8|BE9|M20|P46|E55|G2|G3|G4|G5|G6|G7|LJ|CL3|CL6|HA4|F2|S22)/.test(t)) return 'GA / Light Jet';
+    return '';
+  }
+
+  function catOf(ac, rec) {
+    if (PLANE_CAT[ac]) return PLANE_CAT[ac];
+    if (rec && rec.icao) return classifyAircraftByType(rec.icao);
+    return '';
+  }
+
   // ---------- Load state (shared with the map page) ----------
   let flownAircraft = {}; // id -> { ac, t }
   try {
@@ -52,6 +70,16 @@
 
   const playedIds = Object.keys(flownAircraft).map(Number);
   const playedSet = new Set(playedIds);
+
+  // Logged flights from SimBrief (shared with the map page)
+  let loggedFlights = [];
+  try {
+    const raw = localStorage.getItem(FLIGHTS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) loggedFlights = parsed;
+    }
+  } catch (e) { /* ignore */ }
 
   // ---------- Helpers ----------
   // Leg i flies to course i+1
@@ -85,6 +113,7 @@
   }
 
   function fmtDate(ms) {
+    if (!ms) return '—';
     return new Date(ms).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
@@ -96,7 +125,7 @@
   let flownNm = 0;
   let flownH = 0;
   let flights = 0;
-  const byPlane = {}; // ac -> { count, nm, h, tFirst, tLast }
+  const byPlane = {}; // ac -> { count, nm, h, tFirst, tLast, cat }
 
   playedIds.forEach(function (id) {
     const rec = flownAircraft[id];
@@ -104,12 +133,22 @@
     const leg = legForCourse(id);
     if (leg) { flights++; flownNm += leg.distance; flownH += parseTimeH(leg.flightTime); }
     const b = byPlane[ac] || (byPlane[ac] = { count: 0, nm: 0, h: 0, tFirst: Infinity, tLast: 0 });
+    if (!b.cat) b.cat = catOf(ac, rec);
     b.count++;
     if (leg) { b.nm += leg.distance; b.h += parseTimeH(leg.flightTime); }
     if (rec && rec.t) {
       if (rec.t < b.tFirst) b.tFirst = rec.t;
       if (rec.t > b.tLast) b.tLast = rec.t;
     }
+  });
+
+  // ---------- Logged flights aggregates ----------
+  let fCount = loggedFlights.length;
+  let fNm = 0;
+  let fMin = 0;
+  loggedFlights.forEach(function (f) {
+    fNm += (f.distanceNm || 0);
+    fMin += (f.timeMin || 0);
   });
 
   // ---------- Empty banner ----------
@@ -129,7 +168,8 @@
     heroCard('Courses played', done + '<span class="small"> / ' + total + '</span>', pct + '% of the tour') +
     heroCard('Distance flown', fmtNum(Math.round(flownNm)) + ' <span class="small">nm</span>', '\u2248 ' + fmtNum(Math.round(flownNm * NM2KM)) + ' km') +
     heroCard('Time flown', fmtDur(flownH), flights + ' flights completed') +
-    heroCard('Distance remaining', fmtNum(Math.round(Math.max(0, data.stats.distanceNm - flownNm))) + ' <span class="small">nm</span>', Math.round((1 - flownNm / data.stats.distanceNm) * 100) + '% of the tour left');
+    heroCard('Distance remaining', fmtNum(Math.round(Math.max(0, data.stats.distanceNm - flownNm))) + ' <span class="small">nm</span>', Math.round((1 - flownNm / data.stats.distanceNm) * 100) + '% of the tour left') +
+    heroCard('Flights logged', fCount, fCount ? fmtNum(Math.round(fNm)) + ' nm \u00B7 ' + fmtDur(fMin / 60) + ' \u00B7 SimBrief' : 'From SimBrief');
 
   // ---------- Progress ----------
   document.getElementById('p-fill').style.width = pct + '%';
@@ -142,11 +182,11 @@
   if (!names.length) {
     tblHtml = '<div class="empty-note">Nothing flown yet.</div>';
   } else {
-    tblHtml = '<table class="detail"><tr><th>Aircraft</th><th>Cat</th><th style="text-align:right">Courses</th><th style="text-align:right">Distance</th><th style="text-align:right">Time</th></tr>';
+    tblHtml = '<table class="detail ac-table"><tr><th>Aircraft</th><th>Cat</th><th style="text-align:right">Courses</th><th style="text-align:right">Distance</th><th style="text-align:right">Time</th></tr>';
     names.forEach(function (ac) {
       const b = byPlane[ac];
-      const cat = PLANE_CAT[ac] ? shortOf(PLANE_CAT[ac]) : (ac === '(not recorded)' ? '—' : '');
-      tblHtml += '<tr><td><b>' + ac + '</b></td><td>' + (cat || '—') +
+      const cat = b.cat ? shortOf(b.cat) : '—';
+      tblHtml += '<tr><td><b>' + ac + '</b></td><td>' + cat +
         '</td><td style="text-align:right">' + b.count +
         '</td><td style="text-align:right">' + fmtNum(Math.round(b.nm)) + ' nm' +
         '</td><td style="text-align:right">' + fmtDur(b.h) + '</td></tr>';
@@ -173,6 +213,23 @@
   });
   document.getElementById('fleet-card').innerHTML =
     '<table class="detail"><tr><th>Category</th><th>Aircraft</th><th>Speed</th><th>Runway requirement</th></tr>' + fleetRows + '</table>';
+
+  // ---------- Logged flights table ----------
+  let flHtml;
+  if (!fCount) {
+    flHtml = '<div class="empty-note">No flights logged yet \u2014 open the <b>Map</b> and use <b>Log flight</b> to fetch your latest SimBrief flight plan and draw it on the map.</div>';
+  } else {
+    flHtml = '<table class="detail fl-table"><tr><th>When</th><th>Route</th><th>Aircraft</th><th style="text-align:right">Distance</th><th style="text-align:right">Time</th></tr>';
+    loggedFlights.slice().sort(function (a, b) { return (a.t || 0) - (b.t || 0); }).forEach(function (f) {
+      flHtml += '<tr><td>' + fmtDate(f.t) + '</td>' +
+        '<td><b>' + f.from + ' \u2192 ' + f.to + '</b>' + (f.legId ? ' <span style="color:var(--muted)">(leg #' + f.legId + ')</span>' : '') + '</td>' +
+        '<td>' + (f.aircraft || '—') + '</td>' +
+        '<td style="text-align:right">' + fmtNum(Math.round(f.distanceNm)) + ' nm</td>' +
+        '<td style="text-align:right">' + fmtDur(f.timeMin / 60) + '</td></tr>';
+    });
+    flHtml += '</table>';
+  }
+  document.getElementById('flight-log').innerHTML = flHtml;
 
   // ---------- Charts ----------
   if (typeof Chart === 'undefined') {

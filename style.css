@@ -216,6 +216,18 @@ aside {
 .toggle { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--muted); user-select: none; }
 .toggle:hover { color: var(--text); }
 .toggle input { accent-color: var(--accent); width: 15px; height: 15px; }
+.flight-style-select {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 11px;
+  font-family: inherit;
+  border-radius: 7px;
+  padding: 2px 6px;
+  outline: none;
+  cursor: pointer;
+}
+.flight-style-select:hover { border-color: var(--accent); }
 
 .regions-filter summary {
   cursor: pointer;
@@ -252,6 +264,44 @@ aside {
   padding: 0;
 }
 .btn-reset:hover { text-decoration: underline; }
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.btn-log {
+  align-self: flex-end;
+  border: 1px solid var(--accent);
+  background: rgba(52, 211, 153, 0.12);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-log:hover { background: var(--accent); color: #06281c; }
+
+.btn-primary {
+  border: none;
+  background: var(--accent);
+  color: #06281c;
+  padding: 8px 16px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  transition: filter 0.15s;
+}
+.btn-primary:hover { filter: brightness(1.12); }
+.btn-primary:disabled { opacity: 0.5; cursor: default; }
+
+.hidden { display: none !important; }
 
 /* ---------- Course list ---------- */
 .course-item {
@@ -359,10 +409,21 @@ aside {
 }
 
 /* ---------- Legs tab ---------- */
+.legs-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px;
+}
+.legs-note { color: var(--muted); font-size: 10.5px; }
 #leg-summary { padding: 10px 14px 8px; font-size: 12.5px; color: var(--muted); border-bottom: 1px solid var(--border); }
 #leg-summary b { color: var(--text); }
 #leg-summary .ok-num { color: var(--accent); font-weight: 800; }
 #leg-summary .no-num { color: var(--red); font-weight: 800; }
+#leg-summary .next-num { color: var(--gold); font-weight: 800; }
 
 .leg-row {
   display: grid;
@@ -399,6 +460,10 @@ aside {
 #leg-list .leg-row.status-no { --status: var(--red); }
 #leg-list .leg-row.status-rek { --status: var(--gold); }
 #leg-list .leg-row.dim { opacity: 0.4; }
+#leg-list .leg-row.flown { opacity: 0.5; }
+#leg-list .leg-row.flown .leg-num::after { content: ' \u2713'; color: var(--accent); font-weight: 800; }
+#leg-list .leg-row.next { --status: var(--gold); background: rgba(245, 185, 66, 0.08); }
+#leg-list .leg-row.next .leg-num::after { content: ' NEXT'; font-size: 8.5px; color: var(--gold); letter-spacing: 0.5px; }
 
 .leg-num { font-weight: 800; color: var(--muted); }
 .leg-route { font-weight: 700; }
@@ -435,6 +500,20 @@ table.detail th:nth-child(2), table.detail td:nth-child(2) { width: 41%; }
 table.detail th:nth-child(3), table.detail td:nth-child(3) { width: 13%; }
 table.detail th:nth-child(4), table.detail td:nth-child(4) { width: 24%; }
 table.detail tr:last-child td { border-bottom: none; }
+
+/* 5-column tables (flown-by-aircraft and logged flights) */
+table.detail.ac-table th:nth-child(1), table.detail.ac-table td:nth-child(1) { width: 30%; }
+table.detail.ac-table th:nth-child(2), table.detail.ac-table td:nth-child(2) { width: 10%; }
+table.detail.ac-table th:nth-child(3), table.detail.ac-table td:nth-child(3) { width: 9%; }
+table.detail.ac-table th:nth-child(4), table.detail.ac-table td:nth-child(4) { width: 13%; }
+table.detail.ac-table th:nth-child(5), table.detail.ac-table td:nth-child(5) { width: 38%; }
+
+table.detail.fl-table th:nth-child(1), table.detail.fl-table td:nth-child(1) { width: 16%; }
+table.detail.fl-table th:nth-child(2), table.detail.fl-table td:nth-child(2) { width: 26%; }
+table.detail.fl-table th:nth-child(3), table.detail.fl-table td:nth-child(3) { width: 30%; }
+table.detail.fl-table th:nth-child(4), table.detail.fl-table td:nth-child(4) { width: 12%; }
+table.detail.fl-table th:nth-child(5), table.detail.fl-table td:nth-child(5) { width: 16%; }
+
 .note { font-size: 11px; color: var(--muted); line-height: 1.5; }
 .note b { color: var(--text); }
 
@@ -659,6 +738,64 @@ table.detail tr:last-child td { border-bottom: none; }
   font-family: inherit;
 }
 .btn-cancel:hover { color: var(--text); border-color: var(--muted); }
+
+/* ---------- Flight log modal ---------- */
+.fm-fields { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.fm-input {
+  padding: 8px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 12.5px;
+  font-family: inherit;
+  outline: none;
+  flex: 1 1 150px;
+  min-width: 0;
+  transition: border-color 0.15s;
+}
+.fm-input:focus { border-color: var(--accent); }
+.fm-paste { width: 100%; flex: none; resize: vertical; font-family: Consolas, 'Courier New', monospace; font-size: 11.5px; line-height: 1.5; }
+.fm-error {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--red);
+  background: rgba(249, 112, 102, 0.1);
+  border: 1px solid rgba(249, 112, 102, 0.4);
+  border-radius: 9px;
+  padding: 8px 12px;
+}
+.fm-preview {
+  margin-top: 12px;
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: rgba(52, 211, 153, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.fm-preview-row { font-size: 12.5px; color: var(--muted); }
+.fm-preview-row b { color: var(--text); font-weight: 800; }
+.fm-match { font-size: 11.5px; color: var(--accent); font-weight: 700; margin-top: 2px; }
+.fm-match.no { color: var(--muted); font-weight: 500; }
+.fm-preview .modal-actions { margin-top: 8px; }
+.fm-check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text);
+  margin-top: 4px;
+}
+.fm-check-row b { color: var(--accent); }
+.fm-check-row input { accent-color: var(--accent); width: 15px; height: 15px; }
+.fm-paste-wrap { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 10px; }
+.fm-paste-wrap summary { cursor: pointer; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.fm-paste-wrap summary:hover { color: var(--text); }
+.fm-paste-wrap[open] summary { margin-bottom: 8px; }
+.fm-paste-wrap .fm-paste { margin-bottom: 8px; }
 
 /* ---------- Stats page ---------- */
 .stats-main {

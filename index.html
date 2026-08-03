@@ -54,17 +54,30 @@
           <div class="filter-row">
             <label class="toggle"><input type="checkbox" id="toggle-routes" checked> Show routes</label>
             <label class="toggle"><input type="checkbox" id="toggle-played-only"> Unplayed only</label>
+            <span class="toggle"><input type="checkbox" id="toggle-flights" checked> My flights
+              <select id="flight-style" class="flight-style-select">
+                <option value="straight">Straight line</option>
+                <option value="full">Full route</option>
+              </select>
+            </span>
           </div>
           <details class="regions-filter" id="region-details">
             <summary>Regions</summary>
             <div id="region-filters"></div>
           </details>
-          <button id="reset-all" class="btn-reset">Reset checklist</button>
+          <div class="toolbar-actions">
+            <button id="reset-all" class="btn-reset">Reset checklist</button>
+            <button id="log-flight" class="btn-log">Log flight</button>
+          </div>
         </div>
         <div id="course-list" class="scroll-area"></div>
       </section>
 
       <section id="tab-legs" class="tab-pane">
+        <div class="legs-toolbar">
+          <label class="toggle"><input type="checkbox" id="toggle-hide-flown"> Hide flown</label>
+          <span class="legs-note">Flown legs are dimmed with ✓. The next one to fly is highlighted gold.</span>
+        </div>
         <div id="leg-summary"></div>
         <div id="leg-head" class="leg-row leg-head"></div>
         <div id="leg-list" class="scroll-area"></div>
@@ -84,6 +97,26 @@
     <div class="modal-sub"></div>
     <div class="modal-groups" id="modal-groups"></div>
     <div class="modal-actions"><button id="modal-cancel" class="btn-cancel">Cancel</button></div>
+  </div>
+</div>
+
+<div id="flight-modal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-title">Log a flight</div>
+    <div class="modal-sub">Fetch your latest SimBrief flight plan and draw the actual route on the map. Your username is only sent to SimBrief.</div>
+    <div class="fm-fields">
+      <input type="text" id="fm-username" class="fm-input" placeholder="SimBrief username or Pilot ID" autocomplete="off">
+      <input type="text" id="fm-flightnum" class="fm-input" placeholder="Flight number (optional)" autocomplete="off">
+      <button id="fm-fetch" class="btn-primary">Fetch from SimBrief</button>
+    </div>
+    <div id="fm-error" class="fm-error hidden"></div>
+    <div id="fm-preview" class="fm-preview hidden"></div>
+    <div class="modal-actions"><button id="fm-cancel" class="btn-cancel">Cancel</button></div>
+    <details id="fm-paste-wrap" class="fm-paste-wrap">
+      <summary>Having trouble? Paste the SimBrief XML instead</summary>
+      <textarea id="fm-paste" class="fm-input fm-paste" rows="5" placeholder="Paste the SimBrief XML here…"></textarea>
+      <button id="fm-paste-btn" class="btn-primary">Parse XML</button>
+    </details>
   </div>
 </div>
 

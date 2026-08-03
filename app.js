@@ -26,6 +26,8 @@
   };
 
   const STORAGE_KEY = 'msfs24-world-golf-tour-played';
+  const FLIGHTS_KEY = 'msfs24-world-golf-tour-flights';
+  const FLIGHT_COLOR = '#22d3ee';
   const data = TOUR_DATA;
   const CATS = data.categories;
   const okField = data.okField;
@@ -64,7 +66,21 @@
 
   let selectedAircraft = 'all';
 
+  // Logged flights from SimBrief (localStorage)
+  let flights = [];
+  try {
+    const rawFlights = localStorage.getItem(FLIGHTS_KEY);
+    if (rawFlights) {
+      const parsed = JSON.parse(rawFlights);
+      if (Array.isArray(parsed)) flights = parsed;
+    }
+  } catch (e) { /* ignore */ }
+  let flightsVisible = true;
+  let flightStyle = 'straight';
+  let nextFlightId = flights.reduce(function (m, f) { return Math.max(m, f.id || 0); }, 0) + 1;
+
   function savePlayed() { localStorage.setItem(STORAGE_KEY, JSON.stringify(flownAircraft)); }
+  function saveFlights() { localStorage.setItem(FLIGHTS_KEY, JSON.stringify(flights)); }
 
   function acName(rec) { return (rec && rec.ac) ? rec.ac : (rec || ''); }
 
@@ -90,6 +106,15 @@
   function fmtTime(h) {
     if (h == null) return '—';
     return Number(h).toLocaleString('en-US', { maximumFractionDigits: 1 }) + ' h';
+  }
+
+  function fmtDur(min) {
+    if (min == null || !isFinite(min) || min <= 0) return '—';
+    const h = Math.floor(min / 60);
+    const m = Math.round(min % 60);
+    if (h === 0) return m + 'm';
+    if (m === 0) return h + 'h';
+    return h + 'h ' + m + 'm';
   }
 
   function starsHtml(rating) {
@@ -124,6 +149,7 @@
 
   const courseMarkers = new Map();
   const legLayers = []; // { polyline, label }
+  const flightGroup = L.layerGroup();
 
   function markerIcon(c, isPlayed) {
     let bg, ring, extra = '';
@@ -462,6 +488,8 @@
       m.setPopupContent(coursePopup(c));
     }
     refreshCourseRows();
+    refreshLegRows();
+    refreshLegSummary();
     updateStats();
   }
 
@@ -575,7 +603,18 @@
     });
   }
 
+  function isLegFlown(l) { return played.has(l.id + 1); }
+
+  function nextLegId() {
+    for (let i = 0; i < data.legs.length; i++) {
+      if (!played.has(data.legs[i].id + 1)) return data.legs[i].id;
+    }
+    return null;
+  }
+
   function refreshLegRows() {
+    const hideFlown = document.getElementById('toggle-hide-flown').checked;
+    const nextId = nextLegId();
     legRows.forEach(function (entry, i) {
       const l = data.legs[i];
       entry.chipsEl.innerHTML = CATS.map(function (cat) { return okChipHtml(cat, l, l.category === cat); }).join('');
@@ -586,21 +625,33 @@
         else if (catOk(l, selectedAircraft)) cls = 'status-ok';
         else cls = 'status-no';
       }
-      entry.row.className = 'leg-row' + (cls ? ' ' + cls : '');
+      const flown = isLegFlown(l);
+      const isNext = !flown && l.id === nextId;
+      entry.row.className = 'leg-row' + (cls ? ' ' + cls : '') + (flown ? ' flown' : '') + (isNext ? ' next' : '');
+      entry.row.style.display = (flown && hideFlown) ? 'none' : '';
     });
   }
 
   function refreshLegSummary() {
+    let html;
     if (selectedAircraft === 'all') {
-      legSummaryEl.innerHTML = 'Total <b>' + data.legs.length + ' legs</b> \u00B7 <b>' + fmtNum(data.stats.distanceNm) + ' nm</b>. ' +
+      html = 'Total <b>' + data.legs.length + ' legs</b> \u00B7 <b>' + fmtNum(data.stats.distanceNm) + ' nm</b>. ' +
         'Pick an aircraft above to see which legs you can fly.';
     } else {
       const ok = legCount(selectedAircraft);
       const no = data.legs.length - ok;
-      legSummaryEl.innerHTML = 'With <b>' + shortOf(selectedAircraft) + '</b> you can do <span class="ok-num">' + ok + '</span> of ' +
+      html = 'With <b>' + shortOf(selectedAircraft) + '</b> you can do <span class="ok-num">' + ok + '</span> of ' +
         data.legs.length + ' legs' + (no ? ' \u2014 <span class="no-num">' + no + ' cannot be landed</span>' : '') +
         '. Gold = recommended.';
     }
+    const nextId = nextLegId();
+    const next = nextId != null ? data.legs.find(function (l) { return l.id === nextId; }) : null;
+    if (next) {
+      html += ' <span class="next-num">\u00BB Next: #' + next.id + ' ' + next.from + ' \u2192 ' + next.to + '</span>';
+    } else if (data.legs.length) {
+      html += ' <b style="color:var(--accent)">All legs flown!</b>';
+    }
+    legSummaryEl.innerHTML = html;
   }
 
   function flyToLeg(id) {
@@ -648,8 +699,294 @@
         '<div class="ml-row"><span class="line" style="background:var(--accent)"></span><span class="dot" style="background:var(--accent);border-color:#fff"></span> Can land</div>' +
         '<div class="ml-row"><span class="line dashed" style="background:var(--red)"></span><span class="dot" style="background:var(--red);border-color:#fff"></span> Cannot land</div>';
     }
+    if (flights.length) {
+      html += '<div class="ml-row" style="margin-top:6px"><span class="line" style="background:' + FLIGHT_COLOR + '"></span> My flights (' + flights.length + ')</div>';
+    }
     mapLegendEl.innerHTML = html;
     mapLegendEl.classList.add('show');
+  }
+
+  // ---------- Logged flights (SimBrief) ----------
+  const flightModalEl = document.getElementById('flight-modal');
+  const fmErrorEl = document.getElementById('fm-error');
+  const fmPreviewEl = document.getElementById('fm-preview');
+  let pendingFlight = null;
+
+  function showFmError(msg) {
+    fmErrorEl.textContent = msg;
+    fmErrorEl.classList.remove('hidden');
+  }
+  function clearFmError() {
+    fmErrorEl.textContent = '';
+    fmErrorEl.classList.add('hidden');
+  }
+
+  function openFlightModal() {
+    clearFmError();
+    fmPreviewEl.classList.add('hidden');
+    fmPreviewEl.innerHTML = '';
+    pendingFlight = null;
+    const saved = localStorage.getItem('msfs24-world-golf-tour-simbrief');
+    if (saved) document.getElementById('fm-username').value = saved;
+    flightModalEl.classList.remove('hidden');
+  }
+  function closeFlightModal() {
+    flightModalEl.classList.add('hidden');
+    pendingFlight = null;
+  }
+
+  function rememberSimbriefId(val) {
+    if (val) localStorage.setItem('msfs24-world-golf-tour-simbrief', val);
+  }
+
+  function flightPopupHtml(f) {
+    const hdr = (f.legId ? 'Leg #' + f.legId + ' \u00B7 ' : '') + f.from + ' \u2192 ' + f.to;
+    return '<div class="popup-title">' + hdr + '</div>' +
+      '<div class="popup-sub">Logged flight #' + f.id + ' \u00B7 SimBrief</div>' +
+      (f.aircraft ? '<div class="popup-row"><b>Aircraft:</b> ' + f.aircraft + '</div>' : '') +
+      '<div class="popup-row"><b>Distance:</b> ' + fmtNum(Math.round(f.distanceNm)) + ' nm</div>' +
+      '<div class="popup-row"><b>Time:</b> ' + fmtDur(f.timeMin) + '</div>' +
+      '<div class="popup-row"><b>Logged:</b> ' + new Date(f.t).toLocaleString() + '</div>';
+  }
+
+  function rebuildFlightsLayer() {
+    flightGroup.clearLayers();
+    flights.forEach(function (f) {
+      if (!f.path || !f.path.length) return;
+      const latlngs = f.path.map(function (p) { return [p.lat, p.lon]; });
+      const lineLatlngs = (flightStyle === 'full' || latlngs.length < 2)
+        ? latlngs
+        : [latlngs[0], latlngs[latlngs.length - 1]];
+      const weight = flightStyle === 'full' ? 3 : 2.5;
+      const pl = L.polyline(lineLatlngs, { color: FLIGHT_COLOR, weight: weight, opacity: 0.85 });
+      const start = L.circleMarker(latlngs[0], { radius: 4, color: '#0a0f1a', weight: 2, fillColor: FLIGHT_COLOR, fillOpacity: 1 });
+      const end = L.circleMarker(latlngs[latlngs.length - 1], { radius: 5, color: '#0a0f1a', weight: 2, fillColor: FLIGHT_COLOR, fillOpacity: 1 });
+      const popup = flightPopupHtml(f);
+      pl.bindPopup(popup);
+      start.bindPopup(popup);
+      end.bindPopup(popup);
+      flightGroup.addLayer(pl);
+      flightGroup.addLayer(start);
+      flightGroup.addLayer(end);
+    });
+    if (flightsVisible && flights.length) {
+      if (!map.hasLayer(flightGroup)) flightGroup.addTo(map);
+    } else {
+      map.removeLayer(flightGroup);
+    }
+  }
+
+  function findLegFor(from, to) {
+    return data.legs.find(function (l) { return l.from === from && l.to === to; }) || null;
+  }
+  function findCourseByArrival(icao) {
+    return data.courses.find(function (c) { return c.arrival === icao; }) || null;
+  }
+
+  function matchFleetAircraft(name) {
+    if (!name) return null;
+    const n = name.toLowerCase();
+    let best = null, bestLen = 0;
+    AIRCRAFT.forEach(function (a) {
+      const l = a.label.toLowerCase();
+      if (n.indexOf(l) !== -1 || l.indexOf(n) !== -1) {
+        if (l.length > bestLen) { best = a.label; bestLen = l.length; }
+      }
+    });
+    return best;
+  }
+
+  function markCoursePlayedFromFlight(course, aircraft, aircraftIcao) {
+    const fleet = matchFleetAircraft(aircraft);
+    const label = fleet || aircraftIcao || aircraft || course.category;
+    const prev = flownAircraft[course.id];
+    played.add(course.id);
+    flownAircraft[course.id] = { ac: label, t: (prev && prev.t) ? prev.t : Date.now(), icao: fleet ? '' : (aircraftIcao || '') };
+    savePlayed();
+    refreshCourseVisuals(course.id);
+  }
+
+  function parseHMM(s) {
+    if (!s) return 0;
+    const m = String(s).match(/(\d+):(\d+)/);
+    if (!m) return 0;
+    return (+m[1]) * 60 + (+m[2]);
+  }
+
+  function parseSimbriefJson(obj) {
+    if (!obj || typeof obj !== 'object') return null;
+    const g = obj.general || {};
+    const orig = obj.origin || {};
+    const dest = obj.destination || {};
+    const times = obj.times || {};
+    const ac = obj.aircraft || {};
+    const nav = obj.navlog;
+    let fixes = [];
+    if (Array.isArray(nav)) fixes = nav;
+    else if (nav && Array.isArray(nav.fix)) fixes = nav.fix;
+    else if (nav && nav.fix && typeof nav.fix === 'object') fixes = [nav.fix];
+    const path = [];
+    fixes.forEach(function (f) {
+      if (!f || typeof f !== 'object') return;
+      const lat = parseFloat(f.pos_lat);
+      const lon = parseFloat(f.pos_long);
+      if (!isNaN(lat) && !isNaN(lon)) path.push({ lat: lat, lon: lon, ident: f.ident, name: f.name });
+    });
+    const api = obj.api_params || {};
+    return {
+      from: String(orig.icao_code || g.origin || api.orig || '').toUpperCase(),
+      to: String(dest.icao_code || g.destination || api.dest || '').toUpperCase(),
+      aircraft: g.aircraft || ac.name || ac.base_type || ac.icaocode || '',
+      aircraftIcao: ac.icaocode || '',
+      dist: parseFloat(g.route_distance) || 0,
+      timeMin: parseHMM(times.est_time_enroute || g.est_time_enroute),
+      path: path,
+      wpts: path.map(function (p) { return p.ident; })
+    };
+  }
+
+  function parseSimbriefXml(text) {
+    const doc = new DOMParser().parseFromString(text, 'application/xml');
+    const gen = doc.querySelector('general');
+    const q = function (sel) { const n = gen ? gen.querySelector(sel) : null; return n ? n.textContent.trim() : ''; };
+    const path = [];
+    doc.querySelectorAll('fix').forEach(function (fx) {
+      const latEl = fx.querySelector('pos_lat');
+      const lonEl = fx.querySelector('pos_long');
+      const lat = parseFloat(latEl ? latEl.textContent : '');
+      const lon = parseFloat(lonEl ? lonEl.textContent : '');
+      if (!isNaN(lat) && !isNaN(lon)) {
+        path.push({ lat: lat, lon: lon, ident: (fx.querySelector('ident') ? fx.querySelector('ident').textContent : '').trim() });
+      }
+    });
+    return {
+      from: q('origin').toUpperCase(),
+      to: q('destination').toUpperCase(),
+      aircraft: q('aircraft'),
+      dist: parseFloat(q('route_distance')) || 0,
+      timeMin: parseHMM(q('est_time_enroute')),
+      path: path,
+      wpts: path.map(function (p) { return p.ident; })
+    };
+  }
+
+  function buildFlightPreview(parsed, source) {
+    const leg = findLegFor(parsed.from, parsed.to);
+    const course = findCourseByArrival(parsed.to);
+    let html =
+      '<div class="fm-preview-row"><b>' + parsed.from + ' \u2192 ' + parsed.to + '</b></div>' +
+      (parsed.aircraft ? '<div class="fm-preview-row">Aircraft: ' + parsed.aircraft + '</div>' : '') +
+      '<div class="fm-preview-row">' + fmtNum(Math.round(parsed.dist)) + ' nm \u00B7 ' + fmtDur(parsed.timeMin) +
+        ' \u00B7 ' + parsed.path.length + ' waypoints</div>';
+    if (course) {
+      html += '<div class="fm-match">\u2713 Destination matches tour course <b>' + course.name + '</b>' +
+        (leg ? ' (Leg #' + leg.id + ')' : '') + '</div>' +
+        '<label class="fm-check-row"><input type="checkbox" id="fm-check" checked> Check off <b>' + course.name + '</b> as played</label>';
+    } else {
+      html += '<div class="fm-match no">Destination is not a tour course \u2014 the flight will only be drawn on the map.</div>';
+    }
+    html += '<div class="modal-actions"><button id="fm-save" class="btn-primary">Save flight</button></div>';
+    fmPreviewEl.innerHTML = html;
+    fmPreviewEl.classList.remove('hidden');
+    pendingFlight = { parsed: parsed, leg: leg, course: course, source: source };
+  }
+
+  function savePendingFlight() {
+    const p = pendingFlight;
+    if (!p) return;
+    const f = {
+      id: nextFlightId++,
+      legId: p.leg ? p.leg.id : null,
+      from: p.parsed.from,
+      to: p.parsed.to,
+      aircraft: p.parsed.aircraft,
+      t: Date.now(),
+      distanceNm: p.parsed.dist,
+      timeMin: p.parsed.timeMin,
+      path: p.parsed.path,
+      wpts: p.parsed.wpts,
+      source: p.source
+    };
+    flights.push(f);
+    saveFlights();
+    rebuildFlightsLayer();
+    updateMapLegend();
+    const checkEl = document.getElementById('fm-check');
+    if (p.course && (!checkEl || checkEl.checked)) {
+      markCoursePlayedFromFlight(p.course, p.parsed.aircraft, p.parsed.aircraftIcao);
+    }
+    closeFlightModal();
+  }
+
+  function fetchPlan(params) {
+    const url = 'https://www.simbrief.com/api/xml.fetcher.php?' + params;
+    return fetch(url, { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) {
+        return r.json().then(function (body) {
+          const msg = (body && body.fetch && body.fetch.status) ? body.fetch.status : ('HTTP ' + r.status);
+          throw new Error(msg);
+        }, function () {
+          throw new Error('SimBrief returned HTTP ' + r.status);
+        });
+      }
+      return r.json();
+    }).then(function (obj) {
+      const item = Array.isArray(obj) ? obj[0] : obj;
+      const st = (item && item.fetch && item.fetch.status) || '';
+      if (/error/i.test(st)) throw new Error(st);
+      const parsed = parseSimbriefJson(item);
+      if (!parsed || !parsed.from || !parsed.to) {
+        const keys = Object.keys(item || {}).join(', ');
+        throw new Error('No flight plan found for this user.' + (keys ? ' (Got keys: ' + keys + ')' : ''));
+      }
+      return parsed;
+    });
+  }
+
+  function handleFetch() {
+    const u = document.getElementById('fm-username').value.trim();
+    const fn = document.getElementById('fm-flightnum').value.trim();
+    if (!u) { showFmError('Enter your SimBrief username or Pilot ID first.'); return; }
+    clearFmError();
+    const who = /^\d+$/.test(u) ? 'userid=' + encodeURIComponent(u) : 'username=' + encodeURIComponent(u);
+    const btn = document.getElementById('fm-fetch');
+    const orig = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Fetching\u2026';
+    const fail = function (err) {
+      btn.disabled = false;
+      btn.textContent = orig;
+      showFmError('Could not fetch: ' + err.message + '. If you have a plan, try pasting the XML below.');
+    };
+    fetchPlan(who + '&json=v2' + (fn ? '&flightnumber=' + encodeURIComponent(fn) : ''))
+      .then(function (parsed) { rememberSimbriefId(u); buildFlightPreview(parsed, 'simbrief'); })
+      .catch(function (err) {
+        if (fn) {
+          fetchPlan(who + '&json=v2')
+            .then(function (parsed) { rememberSimbriefId(u); buildFlightPreview(parsed, 'simbrief'); })
+            .catch(function (err2) {
+              btn.disabled = false;
+              btn.textContent = orig;
+              showFmError('Could not fetch (tried with and without flight number): ' + err2.message +
+                '. If you have a plan, try pasting the XML below.');
+            });
+        } else {
+          fail(err);
+        }
+      });
+  }
+
+  function handlePasteXml() {
+    const text = document.getElementById('fm-paste').value.trim();
+    if (!text) { showFmError('Paste the SimBrief XML first.'); return; }
+    clearFmError();
+    try {
+      const parsed = parseSimbriefXml(text);
+      if (!parsed.from || !parsed.to) throw new Error('Could not find a flight plan in that XML.');
+      buildFlightPreview(parsed, 'xml');
+    } catch (e) {
+      showFmError('Could not parse XML: ' + e.message);
+    }
   }
 
   // ---------- Events ----------
@@ -673,6 +1010,15 @@
   document.getElementById('search').addEventListener('input', refreshCourseRows);
   document.getElementById('toggle-played-only').addEventListener('change', refreshCourseRows);
 
+  document.getElementById('toggle-flights').addEventListener('change', function () {
+    flightsVisible = this.checked;
+    if (flightsVisible && flights.length) {
+      if (!map.hasLayer(flightGroup)) flightGroup.addTo(map);
+    } else {
+      map.removeLayer(flightGroup);
+    }
+  });
+
   document.getElementById('reset-all').addEventListener('click', function () {
     if (!confirm('Mark all courses as unplayed? This resets your checklist.')) return;
     played.clear();
@@ -683,13 +1029,33 @@
       if (m) m.setIcon(markerIcon(c, false));
     });
     refreshCourseRows();
+    refreshLegRows();
+    refreshLegSummary();
     updateStats();
+  });
+
+  document.getElementById('toggle-hide-flown').addEventListener('change', refreshLegRows);
+
+  document.getElementById('flight-style').addEventListener('change', function () {
+    flightStyle = this.value;
+    rebuildFlightsLayer();
   });
 
   document.getElementById('modal-cancel').addEventListener('click', closeModal);
   modalEl.addEventListener('click', function (e) { if (e.target === modalEl) closeModal(); });
+
+  document.getElementById('log-flight').addEventListener('click', openFlightModal);
+  document.getElementById('fm-fetch').addEventListener('click', handleFetch);
+  document.getElementById('fm-paste-btn').addEventListener('click', handlePasteXml);
+  document.getElementById('fm-cancel').addEventListener('click', closeFlightModal);
+  flightModalEl.addEventListener('click', function (e) { if (e.target === flightModalEl) closeFlightModal(); });
+  fmPreviewEl.addEventListener('click', function (e) {
+    if (e.target && e.target.id === 'fm-save') savePendingFlight();
+  });
+
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !modalEl.classList.contains('hidden')) closeModal();
+    if (e.key === 'Escape' && !flightModalEl.classList.contains('hidden')) closeFlightModal();
+    else if (e.key === 'Escape' && !modalEl.classList.contains('hidden')) closeModal();
   });
 
   // ---------- Init ----------
@@ -703,4 +1069,5 @@
   refreshLegSummary();
   updateMapLegend();
   updateStats();
+  rebuildFlightsLayer();
 })();
