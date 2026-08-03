@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSFS24 World Golf Tour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">🏌️</div>
+    <div>
+      <h1>MSFS24 <span class="accent">World Golf Tour</span></h1>
+      <p class="tagline">66 courses &middot; 64 flight legs &middot; around the world in Microsoft Flight Simulator 2024</p>
+    </div>
+  </div>
+  <div class="stats" id="stat-bar">
+    <div class="stat-card"><div class="sv" id="stat-played">0/66</div><div class="sl">Courses played</div></div>
+    <div class="stat-card"><div class="sv" id="stat-completion">0%</div><div class="sl">Complete</div></div>
+    <div class="stat-card"><div class="sv" id="stat-distance">63,664 nm</div><div class="sl">Total distance</div></div>
+    <div class="stat-card"><div class="sv" id="stat-time">137.9 h</div><div class="sl">Flight time</div></div>
+    <div class="stat-card"><div class="sv">64</div><div class="sl">Flight legs</div></div>
+  </div>
+</header>
+
+<div class="aircraft-bar">
+  <div class="aircraft-label">Which aircraft are you flying? <span class="hint" id="aircraft-hint"></span></div>
+  <div class="aircraft-pills" id="aircraft-pills"></div>
+  <div class="aircraft-caption" id="aircraft-caption"></div>
+</div>
+
+<main>
+  <aside>
+    <nav class="tabs">
+      <button class="tab active" data-tab="courses">Courses</button>
+      <button class="tab" data-tab="legs">Routes</button>
+      <button class="tab" data-tab="info">Stats</button>
+    </nav>
+
+    <div class="tab-body">
+      <section id="tab-courses" class="tab-pane active">
+        <div class="toolbar">
+          <input type="search" id="search" placeholder="Search course, country, airport…">
+          <div class="filter-row">
+            <label class="toggle"><input type="checkbox" id="toggle-routes" checked> Show routes</label>
+            <label class="toggle"><input type="checkbox" id="toggle-played-only"> Unplayed only</label>
+          </div>
+          <details class="regions-filter" id="region-details">
+            <summary>Regions</summary>
+            <div id="region-filters"></div>
+          </details>
+          <button id="reset-all" class="btn-reset">Reset checklist</button>
+        </div>
+        <div id="course-list" class="scroll-area"></div>
+      </section>
+
+      <section id="tab-legs" class="tab-pane">
+        <div id="leg-summary"></div>
+        <div id="leg-head" class="leg-row leg-head"></div>
+        <div id="leg-list" class="scroll-area"></div>
+      </section>
+
+      <section id="tab-info" class="tab-pane scroll-area">
+        <div id="info-content"></div>
+      </section>
+    </div>
+
+    <div class="legend" id="sidebar-legend"></div>
+  </aside>
+
+  <div id="map"></div>
+  <div class="map-legend" id="map-legend"></div>
+</main>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
