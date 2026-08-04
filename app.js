@@ -64,6 +64,26 @@
     }
   } catch (e) { /* ignore */ }
 
+  // One-time remap of saved course ids after the tour was extended from 66 to 80
+  // courses (every id >= 18 shifted). Runs only once, then marks itself done.
+  const MIGRATED_KEY = 'msfs24-world-golf-tour-v2-migrated';
+  const ID_MIGRATION = { 18:22, 19:23, 20:24, 21:25, 22:26, 23:27, 24:28, 25:29, 26:30, 27:31, 28:32, 29:33, 30:34, 31:38, 32:39, 33:40, 34:41, 35:43, 36:44, 37:46, 38:47, 39:48, 40:49, 41:50, 42:53, 43:54, 44:55, 45:56, 46:57, 47:58, 48:59, 49:61, 50:62, 51:63, 52:64, 53:65, 54:66, 55:67, 56:68, 57:69, 58:70, 59:71, 60:72, 61:73, 62:74, 63:77, 64:78, 65:79, 66:80 };
+  try {
+    if (!localStorage.getItem(MIGRATED_KEY) && localStorage.getItem(STORAGE_KEY)) {
+      const mapped = {};
+      Object.keys(flownAircraft).forEach(function (k) {
+        const id = Number(k);
+        mapped[ID_MIGRATION[id] || id] = flownAircraft[k];
+      });
+      const mPlayed = new Set();
+      played.forEach(function (id) { mPlayed.add(ID_MIGRATION[id] || id); });
+      flownAircraft = mapped;
+      played = mPlayed;
+      localStorage.setItem(MIGRATED_KEY, '1');
+      savePlayed();
+    }
+  } catch (e) { /* ignore */ }
+
   let selectedAircraft = 'all';
 
   // Logged flights from SimBrief (localStorage)
@@ -1062,10 +1082,16 @@
   });
 
   document.getElementById('reset-all').addEventListener('click', function () {
-    if (!confirm('Mark all courses as unplayed? This resets your checklist.')) return;
+    if (!confirm('Reset all progress? This clears your checklist AND all logged flights (map lines and flight stats).')) return;
     played.clear();
     flownAircraft = {};
     savePlayed();
+    flights = [];
+    saveFlights();
+    flightGroup.clearLayers();
+    flightsVisible = false;
+    document.getElementById('toggle-flights').checked = false;
+    map.removeLayer(flightGroup);
     data.courses.forEach(function (c) {
       const m = courseMarkers.get(c.id);
       if (m) m.setIcon(markerIcon(c, false));

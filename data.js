@@ -410,6 +410,90 @@ const TOUR_DATA = {
    "id": 18,
    "played": false,
    "region": "Europe",
+   "name": "Celtic Manor (Twenty Ten)",
+   "country": "Wales",
+   "hub": "EGFF Cardiff Airport",
+   "closer": null,
+   "arrival": "EGFF",
+   "runway": 7723,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": false,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4,
+   "ranking": "Wales #1",
+   "majors": "Ryder Cup 2010 (Twenty Ten Course)",
+   "lat": 51.3967,
+   "lon": -3.3433
+  },
+  {
+   "id": 19,
+   "played": false,
+   "region": "Europe",
+   "name": "Le Golf National",
+   "country": "France",
+   "hub": "LFPO Paris-Orly Airport",
+   "closer": null,
+   "arrival": "LFPO",
+   "runway": 11975,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4.5,
+   "ranking": "France #1",
+   "majors": "Ryder Cup 2018, Open de France (host)",
+   "lat": 48.7233,
+   "lon": 2.3794
+  },
+  {
+   "id": 20,
+   "played": false,
+   "region": "Europe",
+   "name": "The Dutch",
+   "country": "Netherlands",
+   "hub": "EHAM Amsterdam Airport Schiphol",
+   "closer": null,
+   "arrival": "EHAM",
+   "runway": 12467,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4.5,
+   "ranking": "Netherlands #1",
+   "majors": "KLM Open / Dutch Open (DP World Tour host)",
+   "lat": 52.3081,
+   "lon": 4.7642
+  },
+  {
+   "id": 21,
+   "played": false,
+   "region": "Europe",
+   "name": "GC Hamburg-Falkenstein",
+   "country": "Germany",
+   "hub": "EDDH Hamburg Airport",
+   "closer": null,
+   "arrival": "EDDH",
+   "runway": 10715,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4,
+   "ranking": "Germany Top 10",
+   "majors": "German Open (historic host)",
+   "lat": 53.6304,
+   "lon": 9.9882
+  },
+  {
+   "id": 22,
+   "played": false,
+   "region": "Europe",
    "name": "Falsterbo",
    "country": "Sweden",
    "hub": "EKCH Copenhagen Kastrup Airport",
@@ -428,7 +512,7 @@ const TOUR_DATA = {
    "lon": 13.3763
   },
   {
-   "id": 19,
+   "id": 23,
    "played": false,
    "region": "Europe",
    "name": "Lofoten Links",
@@ -449,7 +533,7 @@ const TOUR_DATA = {
    "lon": 13.6094
   },
   {
-   "id": 20,
+   "id": 24,
    "played": false,
    "region": "Europe",
    "name": "Halmstad GK",
@@ -470,7 +554,7 @@ const TOUR_DATA = {
    "lon": 12.8202
   },
   {
-   "id": 21,
+   "id": 25,
    "played": false,
    "region": "Europe",
    "name": "Bro Hof Slott",
@@ -491,7 +575,7 @@ const TOUR_DATA = {
    "lon": 17.9417
   },
   {
-   "id": 22,
+   "id": 26,
    "played": false,
    "region": "Europe",
    "name": "Visby",
@@ -512,7 +596,7 @@ const TOUR_DATA = {
    "lon": 18.3462
   },
   {
-   "id": 23,
+   "id": 27,
    "played": false,
    "region": "Europe",
    "name": "Camiral (PGA Catalunya)",
@@ -533,7 +617,7 @@ const TOUR_DATA = {
    "lon": 2.7618
   },
   {
-   "id": 24,
+   "id": 28,
    "played": false,
    "region": "Europe",
    "name": "Valderrama",
@@ -554,7 +638,7 @@ const TOUR_DATA = {
    "lon": -4.4991
   },
   {
-   "id": 25,
+   "id": 29,
    "played": false,
    "region": "Europe",
    "name": "Finca Cortesín",
@@ -575,7 +659,7 @@ const TOUR_DATA = {
    "lon": -4.4991
   },
   {
-   "id": 26,
+   "id": 30,
    "played": false,
    "region": "Europe",
    "name": "Real Club Sotogrande",
@@ -596,7 +680,7 @@ const TOUR_DATA = {
    "lon": -4.4991
   },
   {
-   "id": 27,
+   "id": 31,
    "played": false,
    "region": "Europe",
    "name": "Marco Simone",
@@ -617,7 +701,7 @@ const TOUR_DATA = {
    "lon": 12.252
   },
   {
-   "id": 28,
+   "id": 32,
    "played": false,
    "region": "Europe",
    "name": "Quinta do Lago",
@@ -638,7 +722,7 @@ const TOUR_DATA = {
    "lon": -7.9709
   },
   {
-   "id": 29,
+   "id": 33,
    "played": false,
    "region": "Europe",
    "name": "Monte Rei",
@@ -659,7 +743,7 @@ const TOUR_DATA = {
    "lon": -7.9709
   },
   {
-   "id": 30,
+   "id": 34,
    "played": false,
    "region": "Europe",
    "name": "Terras da Comporta",
@@ -680,7 +764,70 @@ const TOUR_DATA = {
    "lon": -9.1359
   },
   {
-   "id": 31,
+   "id": 35,
+   "played": false,
+   "region": "Europe",
+   "name": "Costa Navarino",
+   "country": "Greece",
+   "hub": "LGKL Kalamata International Airport",
+   "closer": null,
+   "arrival": "LGKL",
+   "runway": 8868,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": false,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4.5,
+   "ranking": "Greece #1",
+   "majors": "International Series Greece (host), Ryder Cup 2026 bid course",
+   "lat": 37.0683,
+   "lon": 22.0256
+  },
+  {
+   "id": 36,
+   "played": false,
+   "region": "Europe",
+   "name": "Carya GC",
+   "country": "Turkey",
+   "hub": "LTAI Antalya Airport",
+   "closer": null,
+   "arrival": "LTAI",
+   "runway": 11155,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4,
+   "ranking": "Turkey #1",
+   "majors": "Turkish Airlines Open (2019, 2020)",
+   "lat": 36.9016,
+   "lon": 30.7926
+  },
+  {
+   "id": 37,
+   "played": false,
+   "region": "Africa",
+   "name": "Royal Golf Dar Es Salam",
+   "country": "Morocco",
+   "hub": "GMME Rabat-Salé Airport",
+   "closer": null,
+   "arrival": "GMME",
+   "runway": 11483,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4,
+   "ranking": "Africa Top 10",
+   "majors": "Hassan II Golf Trophy (host), Moroccan National Open",
+   "lat": 34.0515,
+   "lon": -6.7515
+  },
+  {
+   "id": 38,
    "played": false,
    "region": "Africa",
    "name": "Arabella",
@@ -701,7 +848,7 @@ const TOUR_DATA = {
    "lon": 18.6043
   },
   {
-   "id": 32,
+   "id": 39,
    "played": false,
    "region": "Africa",
    "name": "Fancourt (Links)",
@@ -722,7 +869,7 @@ const TOUR_DATA = {
    "lon": 22.3789
   },
   {
-   "id": 33,
+   "id": 40,
    "played": false,
    "region": "Africa",
    "name": "Leopard Creek",
@@ -743,7 +890,7 @@ const TOUR_DATA = {
    "lon": 30.9138
   },
   {
-   "id": 34,
+   "id": 41,
    "played": false,
    "region": "Africa",
    "name": "Gary Player CC",
@@ -764,7 +911,28 @@ const TOUR_DATA = {
    "lon": 27.1734
   },
   {
-   "id": 35,
+   "id": 42,
+   "played": false,
+   "region": "Asia",
+   "name": "Al Mouj Golf",
+   "country": "Oman",
+   "hub": "OOMS Muscat International Airport",
+   "closer": null,
+   "arrival": "OOMS",
+   "runway": 11765,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4,
+   "ranking": "Middle East Top 5",
+   "majors": "Oman Open (Asian Tour), European Tour co-sanctioned",
+   "lat": 23.5933,
+   "lon": 58.2844
+  },
+  {
+   "id": 43,
    "played": false,
    "region": "Asia",
    "name": "Yas Links",
@@ -785,7 +953,7 @@ const TOUR_DATA = {
    "lon": 54.6492
   },
   {
-   "id": 36,
+   "id": 44,
    "played": false,
    "region": "Asia",
    "name": "Emirates GC",
@@ -806,7 +974,28 @@ const TOUR_DATA = {
    "lon": 55.371
   },
   {
-   "id": 37,
+   "id": 45,
+   "played": false,
+   "region": "Asia",
+   "name": "DLF G&CC",
+   "country": "India",
+   "hub": "VIDP Delhi (Indira Gandhi) International Airport",
+   "closer": null,
+   "arrival": "VIDP",
+   "runway": 14534,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4.5,
+   "ranking": "India #1 / Asia Top 20",
+   "majors": "Indian Open (2015-2018 host)",
+   "lat": 28.5562,
+   "lon": 77.1
+  },
+  {
+   "id": 46,
    "played": false,
    "region": "Asia",
    "name": "Hirono",
@@ -827,7 +1016,7 @@ const TOUR_DATA = {
    "lon": 135.244
   },
   {
-   "id": 38,
+   "id": 47,
    "played": false,
    "region": "Asia",
    "name": "Kawana (Fuji Course)",
@@ -848,7 +1037,7 @@ const TOUR_DATA = {
    "lon": 139.36
   },
   {
-   "id": 39,
+   "id": 48,
    "played": false,
    "region": "Asia",
    "name": "Nine Bridges",
@@ -869,7 +1058,7 @@ const TOUR_DATA = {
    "lon": 126.4925
   },
   {
-   "id": 40,
+   "id": 49,
    "played": false,
    "region": "Asia",
    "name": "Sentosa (Serapong)",
@@ -890,7 +1079,7 @@ const TOUR_DATA = {
    "lon": 103.994
   },
   {
-   "id": 41,
+   "id": 50,
    "played": false,
    "region": "Asia",
    "name": "Mission Hills",
@@ -911,7 +1100,49 @@ const TOUR_DATA = {
    "lon": 113.8033
   },
   {
-   "id": 42,
+   "id": 51,
+   "played": false,
+   "region": "Asia",
+   "name": "The Bluffs Ho Tram",
+   "country": "Vietnam",
+   "hub": "VVTS Tan Son Nhat International Airport",
+   "closer": null,
+   "arrival": "VVTS",
+   "runway": 10499,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4.5,
+   "ranking": "Vietnam #1",
+   "majors": "Ho Tram Open (Asian Tour), Vietnam events",
+   "lat": 10.8188,
+   "lon": 106.652
+  },
+  {
+   "id": 52,
+   "played": false,
+   "region": "Asia",
+   "name": "Black Mountain",
+   "country": "Thailand",
+   "hub": "VTPH Hua Hin Airport",
+   "closer": null,
+   "arrival": "VTPH",
+   "runway": 6890,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": false,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4.5,
+   "ranking": "Thailand Top 5",
+   "majors": "Asian Tour (Thailand Classic host)",
+   "lat": 12.6362,
+   "lon": 99.9515
+  },
+  {
+   "id": 53,
    "played": false,
    "region": "Oceania",
    "name": "Kauri Cliffs",
@@ -932,7 +1163,7 @@ const TOUR_DATA = {
    "lon": 173.9133
   },
   {
-   "id": 43,
+   "id": 54,
    "played": false,
    "region": "Oceania",
    "name": "Cape Kidnappers",
@@ -953,7 +1184,7 @@ const TOUR_DATA = {
    "lon": 176.87
   },
   {
-   "id": 44,
+   "id": 55,
    "played": false,
    "region": "Oceania",
    "name": "Jack's Point",
@@ -974,7 +1205,7 @@ const TOUR_DATA = {
    "lon": 168.7464
   },
   {
-   "id": 45,
+   "id": 56,
    "played": false,
    "region": "Oceania",
    "name": "Royal Melbourne (Composite)",
@@ -995,7 +1226,7 @@ const TOUR_DATA = {
    "lon": 144.8379
   },
   {
-   "id": 46,
+   "id": 57,
    "played": false,
    "region": "Oceania",
    "name": "Kingston Heath",
@@ -1016,7 +1247,7 @@ const TOUR_DATA = {
    "lon": 144.8379
   },
   {
-   "id": 47,
+   "id": 58,
    "played": false,
    "region": "Oceania",
    "name": "Barnbougle Dunes",
@@ -1037,7 +1268,7 @@ const TOUR_DATA = {
    "lon": 146.43
   },
   {
-   "id": 48,
+   "id": 59,
    "played": false,
    "region": "Oceania",
    "name": "Cape Wickham",
@@ -1058,7 +1289,28 @@ const TOUR_DATA = {
    "lon": 143.878
   },
   {
-   "id": 49,
+   "id": 60,
+   "played": false,
+   "region": "Oceania",
+   "name": "Natadola Bay",
+   "country": "Fiji",
+   "hub": "NFFN Nadi International Airport",
+   "closer": null,
+   "arrival": "NFFN",
+   "runway": 10738,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4,
+   "ranking": "Pacific Top 3",
+   "majors": "None yet (luxury resort links)",
+   "lat": -17.7554,
+   "lon": 177.4434
+  },
+  {
+   "id": 61,
    "played": false,
    "region": "Pacific",
    "name": "Kapalua (Plantation Course)",
@@ -1079,7 +1331,7 @@ const TOUR_DATA = {
    "lon": -156.4318
   },
   {
-   "id": 50,
+   "id": 62,
    "played": false,
    "region": "North America",
    "name": "Cabot Cliffs",
@@ -1100,7 +1352,7 @@ const TOUR_DATA = {
    "lon": -60.0498
   },
   {
-   "id": 51,
+   "id": 63,
    "played": false,
    "region": "North America",
    "name": "Cabot Links",
@@ -1121,7 +1373,7 @@ const TOUR_DATA = {
    "lon": -60.0498
   },
   {
-   "id": 52,
+   "id": 64,
    "played": false,
    "region": "North America",
    "name": "Augusta National",
@@ -1142,7 +1394,7 @@ const TOUR_DATA = {
    "lon": -81.9645
   },
   {
-   "id": 53,
+   "id": 65,
    "played": false,
    "region": "North America",
    "name": "Kiawah Island (Ocean Course)",
@@ -1163,7 +1415,7 @@ const TOUR_DATA = {
    "lon": -80.0382
   },
   {
-   "id": 54,
+   "id": 66,
    "played": false,
    "region": "North America",
    "name": "Pinehurst No. 2",
@@ -1184,7 +1436,7 @@ const TOUR_DATA = {
    "lon": -79.3894
   },
   {
-   "id": 55,
+   "id": 67,
    "played": false,
    "region": "North America",
    "name": "Sand Hills",
@@ -1205,7 +1457,7 @@ const TOUR_DATA = {
    "lon": -102.804
   },
   {
-   "id": 56,
+   "id": 68,
    "played": false,
    "region": "North America",
    "name": "TPC Sawgrass (Stadium)",
@@ -1226,7 +1478,7 @@ const TOUR_DATA = {
    "lon": -81.6878
   },
   {
-   "id": 57,
+   "id": 69,
    "played": false,
    "region": "North America",
    "name": "Whistling Straits",
@@ -1247,7 +1499,7 @@ const TOUR_DATA = {
    "lon": -87.8514
   },
   {
-   "id": 58,
+   "id": 70,
    "played": false,
    "region": "North America",
    "name": "Bandon Dunes",
@@ -1268,7 +1520,7 @@ const TOUR_DATA = {
    "lon": -124.246
   },
   {
-   "id": 59,
+   "id": 71,
    "played": false,
    "region": "North America",
    "name": "Chambers Bay",
@@ -1289,7 +1541,7 @@ const TOUR_DATA = {
    "lon": -122.3103
   },
   {
-   "id": 60,
+   "id": 72,
    "played": false,
    "region": "North America",
    "name": "Pebble Beach",
@@ -1310,7 +1562,7 @@ const TOUR_DATA = {
    "lon": -121.8442
   },
   {
-   "id": 61,
+   "id": 73,
    "played": false,
    "region": "North America",
    "name": "Cypress Point",
@@ -1331,7 +1583,7 @@ const TOUR_DATA = {
    "lon": -121.8442
   },
   {
-   "id": 62,
+   "id": 74,
    "played": false,
    "region": "North America",
    "name": "Spyglass Hill",
@@ -1352,7 +1604,49 @@ const TOUR_DATA = {
    "lon": -121.8442
   },
   {
-   "id": 63,
+   "id": 75,
+   "played": false,
+   "region": "North America",
+   "name": "El Cardonal",
+   "country": "Mexico",
+   "hub": "MMSD Los Cabos International Airport",
+   "closer": null,
+   "arrival": "MMSD",
+   "runway": 9843,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4,
+   "ranking": "Mexico Top 10",
+   "majors": "World Wide Technology Championship (host)",
+   "lat": 23.1518,
+   "lon": -109.721
+  },
+  {
+   "id": 76,
+   "played": false,
+   "region": "North America",
+   "name": "Punta Espada",
+   "country": "Dominican Republic",
+   "hub": "MDPC Punta Cana International Airport",
+   "closer": null,
+   "arrival": "MDPC",
+   "runway": 10171,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "rating": 4.5,
+   "ranking": "Caribbean #1",
+   "majors": "Cap Cana Championship (Champions Tour)",
+   "lat": 18.5674,
+   "lon": -68.3634
+  },
+  {
+   "id": 77,
    "played": false,
    "region": "South America",
    "name": "Pilar Golf Club",
@@ -1373,7 +1667,7 @@ const TOUR_DATA = {
    "lon": -58.5358
   },
   {
-   "id": 64,
+   "id": 78,
    "played": false,
    "region": "South America",
    "name": "Chapelco",
@@ -1394,7 +1688,7 @@ const TOUR_DATA = {
    "lon": -71.1373
   },
   {
-   "id": 65,
+   "id": 79,
    "played": false,
    "region": "South America",
    "name": "Olympic GC",
@@ -1415,7 +1709,7 @@ const TOUR_DATA = {
    "lon": -43.2506
   },
   {
-   "id": 66,
+   "id": 80,
    "played": false,
    "region": "South America",
    "name": "São Fernando GC",
@@ -1761,13 +2055,93 @@ const TOUR_DATA = {
    "id": 17,
    "from": "EINN",
    "fromName": "Shannon Airport",
-   "to": "ESMS",
-   "toName": "Malmö Sturup Airport",
+   "to": "EGFF",
+   "toName": "Cardiff International Airport",
    "fromLat": 52.702,
    "fromLon": -8.9248,
+   "toLat": 51.3967,
+   "toLon": -3.3433,
+   "distance": 220,
+   "runway": 7723,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": false,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "0h 29m"
+  },
+  {
+   "id": 18,
+   "from": "EGFF",
+   "fromName": "Cardiff International Airport",
+   "to": "LFPO",
+   "toName": "Paris-Orly Airport",
+   "fromLat": 51.3967,
+   "fromLon": -3.3433,
+   "toLat": 48.7233,
+   "toLon": 2.3794,
+   "distance": 273,
+   "runway": 11975,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "0h 36m"
+  },
+  {
+   "id": 19,
+   "from": "LFPO",
+   "fromName": "Paris-Orly Airport",
+   "to": "EHAM",
+   "toName": "Amsterdam Airport Schiphol",
+   "fromLat": 48.7233,
+   "fromLon": 2.3794,
+   "toLat": 52.3081,
+   "toLon": 4.7642,
+   "distance": 234,
+   "runway": 12467,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "0h 31m"
+  },
+  {
+   "id": 20,
+   "from": "EHAM",
+   "fromName": "Amsterdam Airport Schiphol",
+   "to": "EDDH",
+   "toName": "Hamburg Airport",
+   "fromLat": 52.3081,
+   "fromLon": 4.7642,
+   "toLat": 53.6304,
+   "toLon": 9.9882,
+   "distance": 205,
+   "runway": 10715,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "0h 27m"
+  },
+  {
+   "id": 21,
+   "from": "EDDH",
+   "fromName": "Hamburg Airport",
+   "to": "ESMS",
+   "toName": "Malmö Sturup Airport",
+   "fromLat": 53.6304,
+   "fromLon": 9.9882,
    "toLat": 55.5356,
    "toLon": 13.3763,
-   "distance": 799,
+   "distance": 164,
    "runway": 9186,
    "gaOk": true,
    "regionalOk": true,
@@ -1775,10 +2149,10 @@ const TOUR_DATA = {
    "widebodyOk": true,
    "category": "Narrowbody (A320/737)",
    "speed": 450,
-   "flightTime": "1h 47m"
+   "flightTime": "0h 22m"
   },
   {
-   "id": 18,
+   "id": 22,
    "from": "ESMS",
    "fromName": "Malmö Sturup Airport",
    "to": "ENEV",
@@ -1798,7 +2172,7 @@ const TOUR_DATA = {
    "flightTime": "1h 44m"
   },
   {
-   "id": 19,
+   "id": 23,
    "from": "ENEV",
    "fromName": "Harstad/Narvik Airport",
    "to": "ENLK",
@@ -1818,7 +2192,7 @@ const TOUR_DATA = {
    "flightTime": "0h 21m"
   },
   {
-   "id": 20,
+   "id": 24,
    "from": "ENLK",
    "fromName": "Leknes Airport",
    "to": "ESMT",
@@ -1838,7 +2212,7 @@ const TOUR_DATA = {
    "flightTime": "1h 32m"
   },
   {
-   "id": 21,
+   "id": 25,
    "from": "ESMT",
    "fromName": "Halmstad Airport",
    "to": "ESSB",
@@ -1858,7 +2232,7 @@ const TOUR_DATA = {
    "flightTime": "0h 30m"
   },
   {
-   "id": 22,
+   "id": 26,
    "from": "ESSB",
    "fromName": "Stockholm-Bromma Airport",
    "to": "ESSV",
@@ -1878,7 +2252,7 @@ const TOUR_DATA = {
    "flightTime": "0h 14m"
   },
   {
-   "id": 23,
+   "id": 27,
    "from": "ESSV",
    "fromName": "Visby Airport",
    "to": "LEGE",
@@ -1898,7 +2272,7 @@ const TOUR_DATA = {
    "flightTime": "2h 29m"
   },
   {
-   "id": 24,
+   "id": 28,
    "from": "LEGE",
    "fromName": "Girona-Costa Brava Airport",
    "to": "LEMG",
@@ -1918,7 +2292,7 @@ const TOUR_DATA = {
    "flightTime": "1h 01m"
   },
   {
-   "id": 25,
+   "id": 29,
    "from": "LEMG",
    "fromName": "Málaga-Costa del Sol Airport",
    "to": "LIRF",
@@ -1938,7 +2312,7 @@ const TOUR_DATA = {
    "flightTime": "1h 51m"
   },
   {
-   "id": 26,
+   "id": 30,
    "from": "LIRF",
    "fromName": "Rome–Fiumicino Leonardo da Vinci International Airport",
    "to": "LPFR",
@@ -1958,7 +2332,7 @@ const TOUR_DATA = {
    "flightTime": "2h 10m"
   },
   {
-   "id": 27,
+   "id": 31,
    "from": "LPFR",
    "fromName": "Faro - Gago Coutinho International Airport",
    "to": "LPPT",
@@ -1978,16 +2352,76 @@ const TOUR_DATA = {
    "flightTime": "0h 16m"
   },
   {
-   "id": 28,
+   "id": 32,
    "from": "LPPT",
    "fromName": "Lisbon Humberto Delgado Airport",
-   "to": "FACT",
-   "toName": "Cape Town International Airport",
+   "to": "GMME",
+   "toName": "Rabat-Salé Airport",
    "fromLat": 38.7813,
    "fromLon": -9.1359,
+   "toLat": 34.0515,
+   "toLon": -6.7515,
+   "distance": 306,
+   "runway": 11483,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "0h 41m"
+  },
+  {
+   "id": 33,
+   "from": "GMME",
+   "fromName": "Rabat-Salé Airport",
+   "to": "LGKL",
+   "toName": "Kalamata International Airport",
+   "fromLat": 34.0515,
+   "fromLon": -6.7515,
+   "toLat": 37.0683,
+   "toLon": 22.0256,
+   "distance": 1412,
+   "runway": 8868,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": false,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "3h 08m"
+  },
+  {
+   "id": 34,
+   "from": "LGKL",
+   "fromName": "Kalamata International Airport",
+   "to": "LTAI",
+   "toName": "Antalya Airport",
+   "fromLat": 37.0683,
+   "fromLon": 22.0256,
+   "toLat": 36.9016,
+   "toLon": 30.7926,
+   "distance": 420,
+   "runway": 11155,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "0h 56m"
+  },
+  {
+   "id": 35,
+   "from": "LTAI",
+   "fromName": "Antalya Airport",
+   "to": "FACT",
+   "toName": "Cape Town International Airport",
+   "fromLat": 36.9016,
+   "fromLon": 30.7926,
    "toLat": -33.974,
    "toLon": 18.6043,
-   "distance": 4633,
+   "distance": 4310,
    "runway": 10502,
    "gaOk": true,
    "regionalOk": true,
@@ -1995,10 +2429,10 @@ const TOUR_DATA = {
    "widebodyOk": true,
    "category": "Widebody (A340/A350/777/MD-11)",
    "speed": 480,
-   "flightTime": "9h 39m"
+   "flightTime": "8h 59m"
   },
   {
-   "id": 29,
+   "id": 36,
    "from": "FACT",
    "fromName": "Cape Town International Airport",
    "to": "FAGG",
@@ -2018,7 +2452,7 @@ const TOUR_DATA = {
    "flightTime": "0h 25m"
   },
   {
-   "id": 30,
+   "id": 37,
    "from": "FAGG",
    "fromName": "George Airport",
    "to": "FAOR",
@@ -2038,7 +2472,7 @@ const TOUR_DATA = {
    "flightTime": "1h 15m"
   },
   {
-   "id": 31,
+   "id": 38,
    "from": "FAOR",
    "fromName": "O.R. Tambo International Airport",
    "to": "FANS",
@@ -2058,7 +2492,7 @@ const TOUR_DATA = {
    "flightTime": "0h 45m"
   },
   {
-   "id": 32,
+   "id": 39,
    "from": "FANS",
    "fromName": "Nelspruit Airport",
    "to": "FAPN",
@@ -2078,27 +2512,47 @@ const TOUR_DATA = {
    "flightTime": "0h 27m"
   },
   {
-   "id": 33,
+   "id": 40,
    "from": "FAPN",
    "fromName": "Pilanesberg International Airport",
-   "to": "OMAA",
-   "toName": "Zayed International Airport",
+   "to": "OOMS",
+   "toName": "Muscat International Airport",
    "fromLat": -25.3338,
    "fromLon": 27.1734,
-   "toLat": 24.441,
-   "toLon": 54.6492,
-   "distance": 3388,
-   "runway": 13471,
+   "toLat": 23.5933,
+   "toLon": 58.2844,
+   "distance": 3450,
+   "runway": 11765,
    "gaOk": true,
    "regionalOk": true,
    "narrowbodyOk": true,
    "widebodyOk": true,
    "category": "Widebody (A340/A350/777/MD-11)",
    "speed": 480,
-   "flightTime": "7h 04m"
+   "flightTime": "7h 11m"
   },
   {
-   "id": 34,
+   "id": 41,
+   "from": "OOMS",
+   "fromName": "Muscat International Airport",
+   "to": "OMAA",
+   "toName": "Zayed International Airport",
+   "fromLat": 23.5933,
+   "fromLon": 58.2844,
+   "toLat": 24.441,
+   "toLon": 54.6492,
+   "distance": 206,
+   "runway": 13471,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "0h 27m"
+  },
+  {
+   "id": 42,
    "from": "OMAA",
    "fromName": "Zayed International Airport",
    "to": "OMDB",
@@ -2118,27 +2572,47 @@ const TOUR_DATA = {
    "flightTime": "0h 08m"
   },
   {
-   "id": 35,
+   "id": 43,
    "from": "OMDB",
    "fromName": "Dubai International Airport",
-   "to": "RJBB",
-   "toName": "Kansai International Airport",
+   "to": "VIDP",
+   "toName": "Delhi (Indira Gandhi) International Airport",
    "fromLat": 25.2498,
    "fromLon": 55.371,
+   "toLat": 28.5562,
+   "toLon": 77.1,
+   "distance": 1179,
+   "runway": 14534,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "2h 37m"
+  },
+  {
+   "id": 44,
+   "from": "VIDP",
+   "fromName": "Delhi (Indira Gandhi) International Airport",
+   "to": "RJBB",
+   "toName": "Kansai International Airport",
+   "fromLat": 28.5562,
+   "fromLon": 77.1,
    "toLat": 34.4273,
    "toLon": 135.244,
-   "distance": 4091,
+   "distance": 2958,
    "runway": 13123,
    "gaOk": true,
    "regionalOk": true,
    "narrowbodyOk": true,
    "widebodyOk": true,
-   "category": "Widebody (A340/A350/777/MD-11)",
-   "speed": 480,
-   "flightTime": "8h 31m"
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "6h 34m"
   },
   {
-   "id": 36,
+   "id": 45,
    "from": "RJBB",
    "fromName": "Kansai International Airport",
    "to": "RJTT",
@@ -2158,7 +2632,7 @@ const TOUR_DATA = {
    "flightTime": "0h 31m"
   },
   {
-   "id": 37,
+   "id": 46,
    "from": "RJTT",
    "fromName": "Tokyo Haneda International Airport",
    "to": "RJTO",
@@ -2178,7 +2652,7 @@ const TOUR_DATA = {
    "flightTime": "0h 15m"
   },
   {
-   "id": 38,
+   "id": 47,
    "from": "RJTO",
    "fromName": "Oshima Airport",
    "to": "RKPC",
@@ -2198,7 +2672,7 @@ const TOUR_DATA = {
    "flightTime": "1h 26m"
   },
   {
-   "id": 39,
+   "id": 48,
    "from": "RKPC",
    "fromName": "Jeju International Airport",
    "to": "WSSS",
@@ -2218,7 +2692,7 @@ const TOUR_DATA = {
    "flightTime": "5h 08m"
   },
   {
-   "id": 40,
+   "id": 49,
    "from": "WSSS",
    "fromName": "Singapore Changi Airport",
    "to": "ZGSZ",
@@ -2238,16 +2712,56 @@ const TOUR_DATA = {
    "flightTime": "3h 07m"
   },
   {
-   "id": 41,
+   "id": 50,
    "from": "ZGSZ",
    "fromName": "Shenzhen Bao'an International Airport",
-   "to": "NZAA",
-   "toName": "Auckland International Airport",
+   "to": "VVTS",
+   "toName": "Tan Son Nhat International Airport",
    "fromLat": 22.6395,
    "fromLon": 113.8033,
+   "toLat": 10.8188,
+   "toLon": 106.652,
+   "distance": 820,
+   "runway": 10499,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "1h 49m"
+  },
+  {
+   "id": 51,
+   "from": "VVTS",
+   "fromName": "Tan Son Nhat International Airport",
+   "to": "VTPH",
+   "toName": "Hua Hin Airport",
+   "fromLat": 10.8188,
+   "fromLon": 106.652,
+   "toLat": 12.6362,
+   "toLon": 99.9515,
+   "distance": 409,
+   "runway": 6890,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": false,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "0h 55m"
+  },
+  {
+   "id": 52,
+   "from": "VTPH",
+   "fromName": "Hua Hin Airport",
+   "to": "NZAA",
+   "toName": "Auckland International Airport",
+   "fromLat": 12.6362,
+   "fromLon": 99.9515,
    "toLat": -37.012,
    "toLon": 174.7863,
-   "distance": 4970,
+   "distance": 5155,
    "runway": 11926,
    "gaOk": true,
    "regionalOk": true,
@@ -2255,10 +2769,10 @@ const TOUR_DATA = {
    "widebodyOk": true,
    "category": "Widebody (A340/A350/777/MD-11)",
    "speed": 480,
-   "flightTime": "10h 21m"
+   "flightTime": "10h 44m"
   },
   {
-   "id": 42,
+   "id": 53,
    "from": "NZAA",
    "fromName": "Auckland International Airport",
    "to": "NZKK",
@@ -2278,7 +2792,7 @@ const TOUR_DATA = {
    "flightTime": "0h 34m"
   },
   {
-   "id": 43,
+   "id": 54,
    "from": "NZKK",
    "fromName": "Kerikeri Airport",
    "to": "NZNR",
@@ -2298,7 +2812,7 @@ const TOUR_DATA = {
    "flightTime": "0h 39m"
   },
   {
-   "id": 44,
+   "id": 55,
    "from": "NZNR",
    "fromName": "Hawke's Bay Airport",
    "to": "NZQN",
@@ -2318,7 +2832,7 @@ const TOUR_DATA = {
    "flightTime": "1h 05m"
   },
   {
-   "id": 45,
+   "id": 56,
    "from": "NZQN",
    "fromName": "Queenstown Airport",
    "to": "YMML",
@@ -2338,7 +2852,7 @@ const TOUR_DATA = {
    "flightTime": "2h 35m"
   },
   {
-   "id": 46,
+   "id": 57,
    "from": "YMML",
    "fromName": "Melbourne Airport",
    "to": "YDPO",
@@ -2358,7 +2872,7 @@ const TOUR_DATA = {
    "flightTime": "0h 30m"
   },
   {
-   "id": 47,
+   "id": 58,
    "from": "YDPO",
    "fromName": "Devonport Airport",
    "to": "YMML",
@@ -2378,7 +2892,7 @@ const TOUR_DATA = {
    "flightTime": "0h 30m"
   },
   {
-   "id": 48,
+   "id": 59,
    "from": "YMML",
    "fromName": "Melbourne Airport",
    "to": "YKII",
@@ -2398,27 +2912,47 @@ const TOUR_DATA = {
    "flightTime": "0h 42m"
   },
   {
-   "id": 49,
+   "id": 60,
    "from": "YKII",
    "fromName": "King Island Airport",
-   "to": "PHOG",
-   "toName": "Kahului International Airport",
+   "to": "NFFN",
+   "toName": "Nadi International Airport",
    "fromLat": -39.8775,
    "fromLon": 143.878,
+   "toLat": -17.7554,
+   "toLon": 177.4434,
+   "distance": 2188,
+   "runway": 10738,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "4h 52m"
+  },
+  {
+   "id": 61,
+   "from": "NFFN",
+   "fromName": "Nadi International Airport",
+   "to": "PHOG",
+   "toName": "Kahului International Airport",
+   "fromLat": -17.7554,
+   "fromLon": 177.4434,
    "toLat": 20.8963,
    "toLon": -156.4318,
-   "distance": 4944,
+   "distance": 2784,
    "runway": 6998,
    "gaOk": true,
    "regionalOk": true,
    "narrowbodyOk": true,
    "widebodyOk": false,
-   "category": "Widebody (A340/A350/777/MD-11)",
-   "speed": 480,
-   "flightTime": "10h 18m"
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "6h 11m"
   },
   {
-   "id": 50,
+   "id": 62,
    "from": "PHOG",
    "fromName": "Kahului International Airport",
    "to": "CYQY",
@@ -2438,7 +2972,7 @@ const TOUR_DATA = {
    "flightTime": "9h 55m"
   },
   {
-   "id": 51,
+   "id": 63,
    "from": "CYQY",
    "fromName": "Sydney / J.A. Douglas McCurdy Airport",
    "to": "KAGS",
@@ -2458,7 +2992,7 @@ const TOUR_DATA = {
    "flightTime": "2h 48m"
   },
   {
-   "id": 52,
+   "id": 64,
    "from": "KAGS",
    "fromName": "Augusta Regional At Bush Field",
    "to": "KCHS",
@@ -2478,7 +3012,7 @@ const TOUR_DATA = {
    "flightTime": "0h 13m"
   },
   {
-   "id": 53,
+   "id": 65,
    "from": "KCHS",
    "fromName": "Charleston International Airport",
    "to": "KSOP",
@@ -2498,7 +3032,7 @@ const TOUR_DATA = {
    "flightTime": "0h 19m"
   },
   {
-   "id": 54,
+   "id": 66,
    "from": "KSOP",
    "fromName": "Moore County Airport",
    "to": "KAIA",
@@ -2518,7 +3052,7 @@ const TOUR_DATA = {
    "flightTime": "2h 36m"
   },
   {
-   "id": 55,
+   "id": 67,
    "from": "KAIA",
    "fromName": "Alliance Municipal Airport",
    "to": "KJAX",
@@ -2538,7 +3072,7 @@ const TOUR_DATA = {
    "flightTime": "2h 44m"
   },
   {
-   "id": 56,
+   "id": 68,
    "from": "KJAX",
    "fromName": "Jacksonville International Airport",
    "to": "KSBM",
@@ -2558,7 +3092,7 @@ const TOUR_DATA = {
    "flightTime": "1h 53m"
   },
   {
-   "id": 57,
+   "id": 69,
    "from": "KSBM",
    "fromName": "Sheboygan County Memorial Airport",
    "to": "KOTH",
@@ -2578,7 +3112,7 @@ const TOUR_DATA = {
    "flightTime": "3h 29m"
   },
   {
-   "id": 58,
+   "id": 70,
    "from": "KOTH",
    "fromName": "Southwest Oregon Regional Airport",
    "to": "KSEA",
@@ -2598,7 +3132,7 @@ const TOUR_DATA = {
    "flightTime": "0h 34m"
   },
   {
-   "id": 59,
+   "id": 71,
    "from": "KSEA",
    "fromName": "Seattle–Tacoma International Airport",
    "to": "KMRY",
@@ -2618,16 +3152,56 @@ const TOUR_DATA = {
    "flightTime": "1h 27m"
   },
   {
-   "id": 60,
+   "id": 72,
    "from": "KMRY",
    "fromName": "Monterey Regional Airport",
-   "to": "SAEZ",
-   "toName": "Ezeiza International Airport - Ministro Pistarini",
+   "to": "MMSD",
+   "toName": "Los Cabos International Airport",
    "fromLat": 36.5868,
    "fromLon": -121.8442,
+   "toLat": 23.1518,
+   "toLon": -109.721,
+   "distance": 1022,
+   "runway": 9843,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "2h 16m"
+  },
+  {
+   "id": 73,
+   "from": "MMSD",
+   "fromName": "Los Cabos International Airport",
+   "to": "MDPC",
+   "toName": "Punta Cana International Airport",
+   "fromLat": 23.1518,
+   "fromLon": -109.721,
+   "toLat": 18.5674,
+   "toLon": -68.3634,
+   "distance": 2329,
+   "runway": 10171,
+   "gaOk": true,
+   "regionalOk": true,
+   "narrowbodyOk": true,
+   "widebodyOk": true,
+   "category": "Narrowbody (A320/737)",
+   "speed": 450,
+   "flightTime": "5h 11m"
+  },
+  {
+   "id": 74,
+   "from": "MDPC",
+   "fromName": "Punta Cana International Airport",
+   "to": "SAEZ",
+   "toName": "Ezeiza International Airport - Ministro Pistarini",
+   "fromLat": 18.5674,
+   "fromLon": -68.3634,
    "toLat": -34.8222,
    "toLon": -58.5358,
-   "distance": 5556,
+   "distance": 3254,
    "runway": 10827,
    "gaOk": true,
    "regionalOk": true,
@@ -2635,10 +3209,10 @@ const TOUR_DATA = {
    "widebodyOk": true,
    "category": "Widebody (A340/A350/777/MD-11)",
    "speed": 480,
-   "flightTime": "11h 34m"
+   "flightTime": "6h 47m"
   },
   {
-   "id": 61,
+   "id": 75,
    "from": "SAEZ",
    "fromName": "Ezeiza International Airport - Ministro Pistarini",
    "to": "SAZY",
@@ -2658,7 +3232,7 @@ const TOUR_DATA = {
    "flightTime": "1h 30m"
   },
   {
-   "id": 62,
+   "id": 76,
    "from": "SAZY",
    "fromName": "Aviador C. Campos Airport",
    "to": "SBGL",
@@ -2678,7 +3252,7 @@ const TOUR_DATA = {
    "flightTime": "3h 54m"
   },
   {
-   "id": 63,
+   "id": 77,
    "from": "SBGL",
    "fromName": "Rio Galeão – Tom Jobim International Airport",
    "to": "SBGR",
@@ -2698,7 +3272,7 @@ const TOUR_DATA = {
    "flightTime": "0h 24m"
   },
   {
-   "id": 64,
+   "id": 78,
    "from": "SBGR",
    "fromName": "São Paulo/Guarulhos–Governor André Franco Montoro International Airport",
    "to": "EGAA",
@@ -2771,6 +3345,22 @@ const TOUR_DATA = {
    52.702,
    -8.9248
   ],
+  "EGFF": [
+   51.3967,
+   -3.3433
+  ],
+  "LFPO": [
+   48.7233,
+   2.3794
+  ],
+  "EHAM": [
+   52.3081,
+   4.7642
+  ],
+  "EDDH": [
+   53.6304,
+   9.9882
+  ],
   "ESMS": [
    55.5356,
    13.3763
@@ -2815,6 +3405,18 @@ const TOUR_DATA = {
    38.7813,
    -9.1359
   ],
+  "GMME": [
+   34.0515,
+   -6.7515
+  ],
+  "LGKL": [
+   37.0683,
+   22.0256
+  ],
+  "LTAI": [
+   36.9016,
+   30.7926
+  ],
   "FACT": [
    -33.974,
    18.6043
@@ -2835,6 +3437,10 @@ const TOUR_DATA = {
    -25.3338,
    27.1734
   ],
+  "OOMS": [
+   23.5933,
+   58.2844
+  ],
   "OMAA": [
    24.441,
    54.6492
@@ -2842,6 +3448,10 @@ const TOUR_DATA = {
   "OMDB": [
    25.2498,
    55.371
+  ],
+  "VIDP": [
+   28.5562,
+   77.1
   ],
   "RJBB": [
    34.4273,
@@ -2866,6 +3476,14 @@ const TOUR_DATA = {
   "ZGSZ": [
    22.6395,
    113.8033
+  ],
+  "VVTS": [
+   10.8188,
+   106.652
+  ],
+  "VTPH": [
+   12.6362,
+   99.9515
   ],
   "NZAA": [
    -37.012,
@@ -2894,6 +3512,10 @@ const TOUR_DATA = {
   "YKII": [
    -39.8775,
    143.878
+  ],
+  "NFFN": [
+   -17.7554,
+   177.4434
   ],
   "PHOG": [
    20.8963,
@@ -2939,6 +3561,14 @@ const TOUR_DATA = {
    36.5868,
    -121.8442
   ],
+  "MMSD": [
+   23.1518,
+   -109.721
+  ],
+  "MDPC": [
+   18.5674,
+   -68.3634
+  ],
   "SAEZ": [
    -34.8222,
    -58.5358
@@ -2966,18 +3596,18 @@ const TOUR_DATA = {
   "South America"
  ],
  "stats": {
-  "played": "0 / 66",
+  "played": "0 / 80",
   "completion": 0,
-  "totalLegs": 64,
-  "distanceNm": 63664,
-  "flightTimeH": 137.869166666667,
-  "distanceKm": 117905.728
+  "totalLegs": 78,
+  "distanceNm": 68581,
+  "flightTimeH": 150.3809722222222,
+  "distanceKm": 127012
  },
  "legsByCategory": {
   "GA / Light Jet": 5,
   "Regional (ATR/ERJ)": 3,
-  "Narrowbody (A320/737)": 48,
-  "Widebody (A340/A350/777/MD-11)": 8
+  "Narrowbody (A320/737)": 64,
+  "Widebody (A340/A350/777/MD-11)": 6
  },
  "missing": []
 };
